@@ -1,4 +1,4 @@
-package com.example.myProject;
+package com.example.myProject.util;
 
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -6,14 +6,27 @@ import java.util.concurrent.atomic.AtomicInteger;
 public class SessionManager {
     private final ConcurrentHashMap<Long, AtomicInteger> activeSessions = new ConcurrentHashMap<>();
 
-    // startSession 메소드를 만들어줘 이때 customerId 는 동시에 2개 이상의 세션을 시작하지 못하도록 해야한다.
+    // 특정 customerId 당 1개의 세션만 활성화되도록 합니다.     
     public boolean startSession(long customerId) {
-        return activeSessions.putIfAbsent(customerId, new AtomicInteger(0)) == null;
-    }
+        activeSessions.putIfAbsent(customerId, new AtomicInteger(0));
+        if(activeSessions.get(customerId).incrementAndGet() == 1)
+            return true;
+
+        System.out.println("Customer " + customerId + " is already active");
+        return false;
+    }   
 
     public void endSession(long customerId) {
-        activeSessions.remove(customerId);
+        AtomicInteger currentCount = activeSessions.get(customerId);
+        if (currentCount != null) {
+            int count = currentCount.decrementAndGet();
+            if (count == 0) {
+                activeSessions.remove(customerId);
+            }
+        }
     }
 
-
+    public ConcurrentHashMap<Long, AtomicInteger> getActiveSessions() {
+        return activeSessions;
+    }
 }

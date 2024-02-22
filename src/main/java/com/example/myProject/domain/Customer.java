@@ -1,75 +1,53 @@
 package com.example.myProject.domain;
 
-import java.util.ArrayList;
-import java.util.List;
-
 public class Customer {
     private long customerId;
+    private String customerNumber;
     private String name;
     private String dateOfBirth;
-    private List<Account> accounts;
+    private Account account;
 
     public Customer(long customerId, String name, String dateOfBirth) {
         this.customerId = customerId;
+        this.customerNumber = "C-" + customerId;
         this.name = name;
         this.dateOfBirth = dateOfBirth;
-        this.accounts = new ArrayList<>();
+        this.account = null;
     }
 
     public void openAccount(String accountNumber) {
         Account newAccount = new Account(accountNumber, this.customerId);
-        this.accounts.add(newAccount);
+        this.account = newAccount;
     }
 
-    public void deposit(String accountNumber, long amount) {
-        for(Account account : accounts) {
-            if(account.getAccountNumber().equals(accountNumber)) {
-                account.deposit(amount);
-                break;
-            }
-        }
+    public void deposit(long amount) {
+        account.deposit(amount);
     }
 
-    public boolean withdraw(String accountNumber, long amount) {
-        for(Account account : accounts) {
-            if(account.getAccountNumber().equals(accountNumber)) {
-                if (account.getBalance() >= amount) {
-                    account.withdraw(amount);
-                    return true;
-                }
-                return false;
-            }
+    public boolean withdraw(long amount) {
+        if (account.getBalance() < amount){
+            System.out.println("Insufficient balance for transfer.");
+            return false;
         }
-        return false;
+
+        account.withdraw(amount);
+        return true;
     }
 
-    public void transfer(String fromAccountNumber, String toAccountNumber, long amount) {
-        Account fromAccount = null;
-        Account toAccount = null;
-        for(Account account : accounts) {
-            if(account.getAccountNumber().equals(fromAccountNumber)) {
-                fromAccount = account;
-            }
-            if(account.getAccountNumber().equals(toAccountNumber)) {
-                toAccount = account;
-            }
-
-            if (fromAccount != null && toAccount != null) 
-                break;
-        }
-
-        if(fromAccount != null && toAccount != null) {
-            synchronized (fromAccount) {
-                fromAccount.withdraw(amount);
-                synchronized (toAccount) {
-                    toAccount.deposit(amount);
-                }
-            }
-        }
+    public boolean transfer(long amount, Account remittanceAccountNumber, String receivingBank, String receivingAccountNumber, String recevingAccountHolder) {
+        if(withdraw(amount))
+            return false;
+            
+        return true;
     }
+
 
     public long getCustomerId() {
         return customerId;
+    }
+
+    public String getCustomerNumber() {
+        return customerNumber;
     }
 
     public String getName() {
@@ -80,7 +58,7 @@ public class Customer {
         return dateOfBirth;
     }
 
-    public List<Account> getAccounts() {
-        return accounts;
+    public Account getAccounts() {
+        return account;
     }
 }
