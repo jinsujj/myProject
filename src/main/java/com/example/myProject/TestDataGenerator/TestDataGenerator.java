@@ -1,4 +1,4 @@
-package com.example.myProject;
+package com.example.myProject.TestDataGenerator;
 
 import java.time.LocalDateTime;
 import java.util.Optional;
@@ -6,32 +6,31 @@ import java.util.Random;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-import com.example.myProject.domain.Bank;
-import com.example.myProject.domain.Customer;
-import com.example.myProject.domain.FinancialAction;
-import com.example.myProject.util.EventProducer;
-import com.example.myProject.util.LogMaker;
-import com.example.myProject.util.RandomMaker;
-import com.example.myProject.util.SessionManager;
+import com.example.myProject.TestDataGenerator.domain.Bank;
+import com.example.myProject.TestDataGenerator.domain.Customer;
+import com.example.myProject.TestDataGenerator.domain.FinancialAction;
+import com.example.myProject.TestDataGenerator.util.EventProducer;
+import com.example.myProject.TestDataGenerator.util.LogMaker;
+import com.example.myProject.TestDataGenerator.util.RandomMaker;
+import com.example.myProject.TestDataGenerator.util.SessionManager;
 
 public class TestDataGenerator {
     private FinancialAction[] actions = { FinancialAction.DEPOSIT, FinancialAction.TRANSFER, FinancialAction.WITHDRAWAL };
     private int customerCount;
     private int simultaneousCustomer;
-    private SessionManager sessionManager;
+    private SessionManager sessionManager = new SessionManager();
 
     RandomMaker rMaker = new RandomMaker();
     LogMaker logMaker = new LogMaker();
     Random random = new Random();
     Bank bank = new Bank();
 
-    public TestDataGenerator(int customerCount, int simultaneousCustomer, SessionManager sessionManager) {
+    public TestDataGenerator(int customerCount, int simultaneousCustomer) {
         this.customerCount = customerCount;
         this.simultaneousCustomer = simultaneousCustomer;     
-        this.sessionManager = sessionManager;
     }
 
-    // 고객 간 동시 거래 시뮬레이션 (거래 간 랜덤 시간 간격으로 실행)
+    // 고객 간 동시 거래 시뮬레이션 (거래 간 랜덤 시간 간격으로 실행)    
     public void simulateCustomerBehavior(){
         ExecutorService executorService = Executors.newFixedThreadPool(simultaneousCustomer);
 
@@ -53,7 +52,7 @@ public class TestDataGenerator {
     }
 
     // 단일 고객 거래 시뮬레이션
-    public void SimulateSingleCustomer(long customerId, EventProducer producer) {
+    private void SimulateSingleCustomer(long customerId, EventProducer producer) {
         // 중복 세션 체크
         if (!sessionManager.startSession(customerId))
             return; 
@@ -62,8 +61,8 @@ public class TestDataGenerator {
             Optional<Customer> findCustomer = bank.findCustomer(customerId);
 
             if (findCustomer.isPresent()) {
-                Customer customer = findCustomer.get();
                 FinancialAction randomAction = actions[random.nextInt(actions.length)];
+                Customer customer = findCustomer.get();
                 sessionStartEvent(customer, producer);
                 processFinancialAction(customer, randomAction, producer);
             } else {
@@ -120,40 +119,30 @@ public class TestDataGenerator {
         producer.send(FinancialAction.SESSION_START,
                 String.valueOf(customerId),
                 logMaker.logSessionStart("", LocalDateTime.now()));
-
-        //System.out.println(logMaker.logSessionStart("", LocalDateTime.now()));
     }
 
     private void sessionStartEvent(Customer customer, EventProducer producer) {
         producer.send(FinancialAction.SESSION_START,
                 String.valueOf(customer.getCustomerId()),
                 logMaker.logSessionStart(customer.getCustomerNumber(), LocalDateTime.now()));
-
-        //System.out.println(logMaker.logSessionStart(customer.getCustomerNumber(), LocalDateTime.now()));
     }
 
     private void signUpEvent(Customer customer, EventProducer producer) {
         producer.send(FinancialAction.SIGNUP,
                 String.valueOf(customer.getCustomerId()),
                 logMaker.logSignUp(customer, LocalDateTime.now()));
-
-        //System.out.println(logMaker.logSignUp(customer, LocalDateTime.now()));
     }
 
     private void openAccountEvent(Customer customer, EventProducer producer) {
         producer.send(FinancialAction.OPEN_ACCOUNT,
                 String.valueOf(customer.getCustomerId()),
                 logMaker.logAccountOpening(customer, LocalDateTime.now()));
-
-        //System.out.println(logMaker.logAccountOpening(customer, LocalDateTime.now()));
     }
 
     public void depositEvent(Customer customer, EventProducer producer) {
         producer.send(FinancialAction.DEPOSIT,
                 String.valueOf(customer.getCustomerId()),
                 logMaker.logDeposit(customer, LocalDateTime.now()));
-
-        //System.out.println(logMaker.logDeposit(customer, LocalDateTime.now()));
     }
 
     public void transferEvent(Customer customer, String remittanceAccountNumber, 
@@ -163,15 +152,11 @@ public class TestDataGenerator {
                 String.valueOf(customer.getCustomerId()),
                 logMaker.logTransfer(customer,remittanceAccountNumber, receivingBank,
                         receivingAccountNumber, receivingAccountHolder,transferAmount, LocalDateTime.now()));
-
-        //System.out.println(logMaker.logTransfer(customer,remittanceAccountNumber, receivingBank,receivingAccountNumber, receivingAccountHolder,transferAmount, LocalDateTime.now()));
     }
 
     public void withdrawEvent(Customer customer, EventProducer producer) {
         producer.send(FinancialAction.WITHDRAWAL,
                 String.valueOf(customer.getCustomerId()),
                 logMaker.logWithdrawal(customer, LocalDateTime.now()));
-
-        //System.out.println(logMaker.logWithdrawal(customer, LocalDateTime.now()));
     }
 }

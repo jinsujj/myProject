@@ -1,4 +1,4 @@
-package com.example.myProject.util;
+package com.example.myProject.TestDataGenerator.util;
 
 import java.util.Random;
 

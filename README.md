@@ -9,3 +9,9 @@ http://localhost:8989
 ## TestDataGenerator 파일 실행 
 mvn exec:java -Dexec.args="generator"
 
+## Profiler 파일 실행 
+mvn exec:java -Dexec.args="profiler"
+
+
+
+

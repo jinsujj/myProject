@@ -1,9 +1,10 @@
-package com.example.myProject.util;
+package com.example.myProject.TestDataGenerator.util;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
-import com.example.myProject.domain.Customer;
+import com.example.myProject.TestDataGenerator.domain.Customer;
+
 
 public class LogMaker {
     DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");

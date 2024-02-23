@@ -1,4 +1,4 @@
-package com.example.myProject.domain;
+package com.example.myProject.TestDataGenerator.domain;
 
 import java.util.Map;
 import java.util.Optional;

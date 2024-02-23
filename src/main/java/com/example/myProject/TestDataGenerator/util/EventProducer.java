@@ -1,4 +1,4 @@
-package com.example.myProject.util;
+package com.example.myProject.TestDataGenerator.util;
 
 import java.util.Properties;
 
@@ -8,15 +8,15 @@ import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.clients.producer.ProducerRecord;
 import org.apache.kafka.common.Uuid;
 
-import com.example.myProject.domain.FinancialAction;
+import com.example.myProject.TestDataGenerator.domain.FinancialAction;
 
 public class EventProducer {
     private Producer<String, String> producer;
     private String transactionIdPrefix = "trans-"; 
+    private Properties props = new Properties();
 
     public EventProducer(){
-        Properties props = new Properties();
-        // Broker 서버 리스트 설정
+        // Producer 설정
         props.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, "localhost:9092,localhost:9093,localhost:9094");
         props.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, "org.apache.kafka.common.serialization.StringSerializer");
         props.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, "org.apache.kafka.common.serialization.StringSerializer");
