@@ -10,11 +10,11 @@ import org.apache.kafka.common.Uuid;
 
 import com.example.myProject.domain.FinancialAction;
 
-public class KafkaProducerConfig {
+public class EventProducer {
     private Producer<String, String> producer;
     private String transactionIdPrefix = "trans-"; 
 
-    public KafkaProducerConfig(){
+    public EventProducer(){
         Properties props = new Properties();
         // Broker 서버 리스트 설정
         props.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, "localhost:9092,localhost:9093,localhost:9094");
