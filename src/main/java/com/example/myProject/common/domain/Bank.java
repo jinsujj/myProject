@@ -4,6 +4,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 
+// 은행은 Singleton 으로 관리 
 public class Bank {
     private Map<Long, Customer> customers;
 
@@ -17,6 +18,15 @@ public class Bank {
 
     public Optional<Customer> findCustomer(long customerId) {
         return Optional.ofNullable(customers.get(customerId));
+    }
+
+    public Optional<Account> findCustomerAccount(long customerId) {
+        Optional<Customer> customer = findCustomer(customerId);
+
+        if (customer.isPresent())
+            return Optional.of(customer.get().getAccount());
+
+        return Optional.empty();
     }
 
     public String customerSize() {

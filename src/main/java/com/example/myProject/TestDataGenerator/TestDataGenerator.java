@@ -1,6 +1,7 @@
 package com.example.myProject.testDataGenerator;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Optional;
 import java.util.Random;
 import java.util.concurrent.ExecutorService;
@@ -19,6 +20,7 @@ public class TestDataGenerator {
     private int customerCount;
     private int simultaneousCustomer;
     private SessionManager sessionManager = new SessionManager();
+    private DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
     RandomMaker rMaker = new RandomMaker();
     EventLogMaker logMaker = new EventLogMaker();
@@ -107,7 +109,8 @@ public class TestDataGenerator {
     // 고객 가입 & 계좌 개설
     private void processNewMemberAction(long customerId, EventProducer producer) {
         // customer signup
-        Customer newCustomer = new Customer(customerId, rMaker.generateName(), rMaker.generateBirth(), LocalDateTime.now());
+        Customer newCustomer = new Customer(customerId, rMaker.generateName(), rMaker.generateBirth(), 
+                LocalDateTime.now().format(formatter));
         bank.signupCustomer(newCustomer);
         signUpEvent(newCustomer, producer);
 

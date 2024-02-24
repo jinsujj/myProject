@@ -1,17 +1,16 @@
 package com.example.myProject.common.domain;
 
-import java.time.LocalDateTime;
-
 public class Customer {
     private long customerId;
     private String customerNumber;
     private String name;
     private String birthDate;
-    private LocalDateTime joinDateTime;
+    private String joinDateTime;
     private long sessionCount;
     private Account account;
 
-    public Customer(long customerId, String name, String birthDate, LocalDateTime joinDateTime) {
+    // testDataGenerator
+    public Customer(long customerId, String name, String birthDate, String joinDateTime) {
         this.customerId = customerId;
         this.customerNumber = "C" + customerId;
         this.name = name;
@@ -21,6 +20,18 @@ public class Customer {
         this.account = new Account();
     }
 
+    // consumerRunner
+    public Customer(String customerNumber, String name, String birthDate, String joinDateTime) {
+        this.customerId = Long.parseLong(customerNumber.substring(1));
+        this.customerNumber = name.substring(1);
+        this.name = name;
+        this.birthDate = birthDate;
+        this.joinDateTime = joinDateTime;
+        this.sessionCount = 1;
+        this.account = new Account();
+    }
+
+    
     public void addSession() {
         this.sessionCount++;
     }
@@ -65,7 +76,7 @@ public class Customer {
         return birthDate;
     }
 
-    public LocalDateTime getJoinDateTime() {
+    public String getJoinDateTime() {
         return joinDateTime;
     }
 

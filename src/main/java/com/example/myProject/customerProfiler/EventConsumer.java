@@ -1,9 +1,9 @@
-package com.example.myProject.customerProfiler.util;
+package com.example.myProject.customerProfiler;
 
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.common.serialization.StringDeserializer;
 
-import com.example.myProject.customerProfiler.domain.FinancialAction;
+import com.example.myProject.common.domain.FinancialAction;
 
 import java.util.Properties;
 import java.util.Arrays;
@@ -38,7 +38,7 @@ public class EventConsumer {
                     .toArray(String[]::new);
     }
 
-    public void consumeEvent() {
+    public void consume() {
         ExecutorService executor = Executors.newFixedThreadPool(topics.length * consumerCount);                 
 
         // 토픽별 컨슈머 그룹 및 컨슈머 개수 할당
@@ -51,29 +51,3 @@ public class EventConsumer {
         }
     }
 }
-
-
-
-/*
- *   a. 평가항목
-        1) Kafka Consumer를 올바르게 사용했는지 여부
-        2) 동시성 프로그래밍 기반으로 효율적으로 고객 프로파일 데이터를 생성 했는지 여부
-        3) OOP 원칙에 맞게 객체 모델링을 했는지 여부
-    b. 요구사항
-        1) 메모리 기반 자료구조에 다음과 같은 데이터를 저장한다.
-            - 고객
-               1. 고객명
-               2. 생년월일
-               3. 가입일시
-               4. 누적 세션 횟수
-            - 계좌  
-               1. 잔액
-               2. 거래유형(입금, 출금, 이체)별 최소, 최대 거래금액
-               3. 거래유형 구분없이 최근 3건의 거래내역
-        2) 특정 고객의 데이터를 JSON 포맷으로 조회 가능한 명령을 REST API로 제공한다.
-        3) 성능을 최적화한 아키텍처로 설계한다.
-            - 실시간성 (이벤트 발생시각으로 부터 얼마나 빨리 프로파일 되는지)
-            - 프로파일 처리량
-            - CPU 부하
-            - 메모리 사용량
- */

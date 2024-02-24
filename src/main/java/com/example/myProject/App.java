@@ -1,6 +1,6 @@
 package com.example.myProject;
 
-import com.example.myProject.customerProfiler.util.EventConsumer;
+import com.example.myProject.customerProfiler.EventConsumer;
 import com.example.myProject.testDataGenerator.TestDataGenerator;
 
 public class App 
@@ -15,7 +15,7 @@ public class App
         // profiler 모드로 실행
         if (args.length == 0 || args[0].equals("profiler")){
             EventConsumer eventConsumer = new EventConsumer();
-            eventConsumer.consumeEvent();
+            eventConsumer.consume();
         }
         // generator 모드로 실행
         else if(args[0].equals("generator")){

@@ -1,9 +1,8 @@
-package com.example.myProject.customerProfiler.util;
+package com.example.myProject.customerProfiler;
 
 import java.util.Properties;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.Map;
 import java.io.BufferedWriter;
 import java.io.FileWriter;
@@ -17,9 +16,7 @@ import org.apache.kafka.clients.consumer.KafkaConsumer;
 import org.apache.kafka.clients.consumer.OffsetAndMetadata;
 import org.apache.kafka.common.TopicPartition;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonMappingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.example.myProject.common.domain.FinancialAction;
 
 /*
  * Runnable 인터페이스를 사용하는 이유
@@ -47,9 +44,24 @@ import com.fasterxml.jackson.databind.ObjectMapper;
  * Runnable 을 사용하면 이러한 고수준 동시성 몌ㅑ의 호환성이 보장됩니다.
  */
 
+
+ /*
+  * - 고객
+        1. 고객명
+        2. 생년월일
+        3. 가입일시
+        4. 누적 세션 횟수
+ 
+    - 계좌
+        1. 잔액
+        2. 거래유형(입금, 출금, 이체)별 최소, 최대 거래금액
+        3. 거래유형 구분없이 최근 3건의 거래내역
+  */
+
 public class ConsumerRunner implements Runnable{
     private static final AtomicInteger MAX_RETRY = new AtomicInteger(3); // 최대 재시도 횟수
     private static final long RETRY_INTERVAL_MS = 1000; // 재시도 간격 (밀리초)
+    private static final int CONSUME_INTERVAL_MS = 100; // 컨슈머 폴링 주기 (밀리초)
 
     private final String topic;
     private final String groupId;
@@ -70,11 +82,15 @@ public class ConsumerRunner implements Runnable{
 
         try {
             while (true) {
-                ConsumerRecords<String, String> records = consumer.poll(Duration.ofMillis(100));
+                ConsumerRecords<String, String> records = consumer.poll(Duration.ofMillis(CONSUME_INTERVAL_MS));
                 for (ConsumerRecord<String, String> record : records) {
-                    processRecord(record);
+                    FinancialAction action = FinancialAction.valueOf(record.topic());
+                    MessageProcessor processor = new ProcessorFactory().getProcessor(action);
+                    if (processor != null) {
+                        processor.process(record);
+                    }
                 }
-                asyncCommitWithRetry(consumer, MAX_RETRY);
+                asyncCommit(consumer, MAX_RETRY);
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -83,16 +99,9 @@ public class ConsumerRunner implements Runnable{
         }
     }
 
-    // 메시지 처리 로직
-    private void processRecord(ConsumerRecord<String, String> record) throws JsonMappingException, JsonProcessingException{
-        ObjectMapper mapper = new ObjectMapper();
-        HashMap<String, String> value = mapper.readValue(record.value(), HashMap.class);
-        System.out.printf("Processed record with key %s and value %s%n", record.key(), value);
-    }
-
     
     // 비동기 커밋 및 재시도 로직
-    private static void asyncCommitWithRetry(KafkaConsumer<String, String> consumer, AtomicInteger remainingRetries) {
+    private static void asyncCommit(KafkaConsumer<String, String> consumer, AtomicInteger remainingRetries) {
         consumer.commitAsync((offsets, exception) -> {
             if (exception != null) {
                 if (remainingRetries.get() > 0) {
@@ -114,7 +123,7 @@ public class ConsumerRunner implements Runnable{
             return;
         }
         remainingRetries.decrementAndGet();
-        asyncCommitWithRetry(consumer, remainingRetries);
+        asyncCommit(consumer, remainingRetries);
     }
 
     // 실패한 offset 저장 로직
@@ -122,8 +131,10 @@ public class ConsumerRunner implements Runnable{
         System.out.println("Commit failed after retries: " + exception.getMessage());
         try (BufferedWriter writer = new BufferedWriter(new FileWriter("failed_consumer_offset.txt", true))) {
             for (Map.Entry<TopicPartition, OffsetAndMetadata> entry : offsets.entrySet()) {
-                writer.write("Topic: " + entry.getKey().topic() + " Partition: " + entry.getKey().partition() +
-                             " Offset: " + entry.getValue().offset() + "\n");
+                writer.write("Topic: " + entry.getKey().topic() + 
+                            " Partition: " + entry.getKey().partition() +
+                            " Offset: " + entry.getValue().offset() + "\n"
+                            );
             }
         }
         catch (IOException e) {

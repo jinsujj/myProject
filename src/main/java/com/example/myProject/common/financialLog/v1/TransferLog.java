@@ -41,7 +41,7 @@ public class TransferLog {
     public String getReceivingAccountNumber() {
         return receivingAccountNumber;
     }
-
+    
     public String getReceivingAccountHolder() {
         return receivingAccountHolder;
     }
@@ -52,9 +52,5 @@ public class TransferLog {
 
     public String getTransferTime() {
         return transferTime;
-    }
-
-    public DateTimeFormatter getFormatter() {
-        return formatter;
     }
 }
