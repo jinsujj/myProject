@@ -15,7 +15,9 @@ import org.apache.kafka.clients.consumer.ConsumerRecords;
 import org.apache.kafka.clients.consumer.KafkaConsumer;
 import org.apache.kafka.clients.consumer.OffsetAndMetadata;
 import org.apache.kafka.common.TopicPartition;
+import org.apache.kafka.common.serialization.StringDeserializer;
 
+import com.example.myProject.common.domain.Bank;
 import com.example.myProject.common.domain.FinancialAction;
 
 /*
@@ -66,16 +68,26 @@ public class ConsumerRunner implements Runnable{
     private final String topic;
     private final String groupId;
     private Properties props;
+    private Bank bank;
 
-    public ConsumerRunner(String topic, String groupId, Properties props) {
+    public ConsumerRunner(String topic, String groupId, Properties props, Bank bank) {
         this.topic = topic;
         this.groupId = groupId;
         this.props = props;
+        this.bank = bank;
     }
 
     @Override
     public void run() {
         // 토픽별 컨슈머 그룹 생성
+        // Consumer 설정
+        this.props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, "localhost:9092,localhost:9093,localhost:9094");
+        this.props.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class.getName());
+        this.props.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class.getName());
+
+        // EOS(Exactly Once Semantics) 설정
+        this.props.put(ConsumerConfig.ISOLATION_LEVEL_CONFIG, "read_committed");
+        this.props.put(ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG, "false");   
         this.props.put(ConsumerConfig.GROUP_ID_CONFIG,groupId);
         KafkaConsumer<String, String> consumer = new KafkaConsumer<>(props);
         consumer.subscribe(Arrays.asList(topic));
@@ -84,10 +96,11 @@ public class ConsumerRunner implements Runnable{
             while (true) {
                 ConsumerRecords<String, String> records = consumer.poll(Duration.ofMillis(CONSUME_INTERVAL_MS));
                 for (ConsumerRecord<String, String> record : records) {
+                    
                     FinancialAction action = FinancialAction.valueOf(record.topic());
                     MessageProcessor processor = new ProcessorFactory().getProcessor(action);
                     if (processor != null) {
-                        processor.process(record);
+                        processor.process(record,bank);
                     }
                 }
                 asyncCommit(consumer, MAX_RETRY);

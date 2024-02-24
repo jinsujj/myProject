@@ -3,13 +3,12 @@ package com.example.myProject.customerProfiler;
 import java.util.HashMap;
 import java.util.Map;
 import com.example.myProject.common.domain.FinancialAction;
-import com.example.myProject.customerProfiler.messageProcessor.DepositProcessor;
-import com.example.myProject.customerProfiler.messageProcessor.MessageProcessor;
-import com.example.myProject.customerProfiler.messageProcessor.OpenAccountProcessor;
-import com.example.myProject.customerProfiler.messageProcessor.SessionStartProcessor;
-import com.example.myProject.customerProfiler.messageProcessor.SignUpProcessor;
-import com.example.myProject.customerProfiler.messageProcessor.TransferProcessor;
-import com.example.myProject.customerProfiler.messageProcessor.WithdrawalProcessor;
+import com.example.myProject.customerProfiler.messageProcessorImpl.DepositProcessor;
+import com.example.myProject.customerProfiler.messageProcessorImpl.OpenAccountProcessor;
+import com.example.myProject.customerProfiler.messageProcessorImpl.SessionStartProcessor;
+import com.example.myProject.customerProfiler.messageProcessorImpl.SignUpProcessor;
+import com.example.myProject.customerProfiler.messageProcessorImpl.TransferProcessor;
+import com.example.myProject.customerProfiler.messageProcessorImpl.WithdrawalProcessor;
 
 public class ProcessorFactory {
     private final Map<FinancialAction, MessageProcessor> processorMap = new HashMap<>();

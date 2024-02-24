@@ -3,13 +3,20 @@ package com.example.myProject.common.financialLog.v1;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 public class DepositLog {
     private String customerNumber;
     private String depositAccountNumber;
     private long depositAmount;
     private String depositTime;
 
+    private transient ObjectMapper mapper = new ObjectMapper();
     private transient DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+
+    public DepositLog() {
+    }
 
     public DepositLog(String customerNumber, String depositAccountNumber, long depositAmount, LocalDateTime depositTime) {
         this.customerNumber = customerNumber;
@@ -33,4 +40,8 @@ public class DepositLog {
     public String getDepositTime() {
         return depositTime;
     }
-}
+
+    public String toJson() throws JsonProcessingException {
+        return mapper.writeValueAsString(this);
+    }
+}   

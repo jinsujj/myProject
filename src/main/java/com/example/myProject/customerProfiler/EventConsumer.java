@@ -1,8 +1,7 @@
 package com.example.myProject.customerProfiler;
 
-import org.apache.kafka.clients.consumer.ConsumerConfig;
-import org.apache.kafka.common.serialization.StringDeserializer;
 
+import com.example.myProject.common.domain.Bank;
 import com.example.myProject.common.domain.FinancialAction;
 
 import java.util.Properties;
@@ -19,33 +18,28 @@ import java.util.concurrent.Executors;
  */
 
 public class EventConsumer {
-    private final int consumerCount = 5;
+    private final int consumerCount;
     private final String[] topics;
     private Properties props = new Properties();
+    private Bank bank;
 
-    public EventConsumer() {
-        // Consumer 설정
-        props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, "localhost:9092,localhost:9093,localhost:9094");
-        props.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class.getName());
-        props.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class.getName());
-
-        // EOS(Exactly Once Semantics) 설정
-        props.put(ConsumerConfig.ISOLATION_LEVEL_CONFIG, "read_committed");
-        props.put(ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG, "false");
-
+    public EventConsumer(int consumerCount, Bank bank) {
+        this.bank = bank;
+        this.consumerCount = consumerCount;
         this.topics = Arrays.stream(FinancialAction.values())
                     .map(Enum::name)
                     .toArray(String[]::new);
     }
 
-    public void consume() {
+    public void consume() throws InterruptedException {
         ExecutorService executor = Executors.newFixedThreadPool(topics.length * consumerCount);                 
 
         // 토픽별 컨슈머 그룹 및 컨슈머 개수 할당
         for (String topic : topics) {
+            String groupId = "group_" + topic;
+            Thread.sleep(2000);
             for(int i =0; i< consumerCount; i++){
-                String groupId = "group_" + topic + "_" + i;
-                ConsumerRunner consumerRunner = new ConsumerRunner(topic, groupId, props);
+                ConsumerRunner consumerRunner = new ConsumerRunner(topic, groupId, props, bank);
                 executor.submit(consumerRunner);
             }
         }

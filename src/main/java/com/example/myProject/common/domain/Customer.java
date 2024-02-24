@@ -23,7 +23,7 @@ public class Customer {
     // consumerRunner
     public Customer(String customerNumber, String name, String birthDate, String joinDateTime) {
         this.customerId = Long.parseLong(customerNumber.substring(1));
-        this.customerNumber = name.substring(1);
+        this.customerNumber = customerNumber;
         this.name = name;
         this.birthDate = birthDate;
         this.joinDateTime = joinDateTime;
@@ -59,7 +59,7 @@ public class Customer {
         return false;
     }
 
-
+                  
     public long getCustomerId() {
         return customerId;
     }

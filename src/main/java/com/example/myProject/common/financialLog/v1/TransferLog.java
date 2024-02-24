@@ -3,6 +3,9 @@ package com.example.myProject.common.financialLog.v1;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 public class TransferLog {
     private String customerNumber;
     private String remittanceAccountNumber;
@@ -12,7 +15,11 @@ public class TransferLog {
     private long transferAmount;
     private String transferTime;
 
+    private transient ObjectMapper mapper = new ObjectMapper();
     private transient DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+
+    public TransferLog() {
+    }
     
     public TransferLog(String customerNumber, String remittanceAccountNumber, String receivingBank,
             String receivingAccountNumber, String receivingAccountHolder, long transferAmount,
@@ -41,7 +48,7 @@ public class TransferLog {
     public String getReceivingAccountNumber() {
         return receivingAccountNumber;
     }
-    
+
     public String getReceivingAccountHolder() {
         return receivingAccountHolder;
     }
@@ -52,5 +59,9 @@ public class TransferLog {
 
     public String getTransferTime() {
         return transferTime;
+    }
+
+    public String toJson() throws JsonProcessingException {
+        return mapper.writeValueAsString(this);
     }
 }
