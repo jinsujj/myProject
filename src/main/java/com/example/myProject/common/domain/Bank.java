@@ -1,11 +1,11 @@
-package com.example.myProject.TestDataGenerator.domain;
+package com.example.myProject.common.domain;
 
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class Bank {
-    private Map<Long,Customer> customers;
+    private Map<Long, Customer> customers;
 
     public Bank() {
         this.customers = new ConcurrentHashMap<>();

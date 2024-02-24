@@ -1,13 +1,11 @@
-package com.example.myProject.CustomerProfiler.util;
+package com.example.myProject.customerProfiler.util;
 
 import java.util.Properties;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
-import java.io.BufferedReader;
 import java.io.BufferedWriter;
-import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.time.Duration;
@@ -18,6 +16,10 @@ import org.apache.kafka.clients.consumer.ConsumerRecords;
 import org.apache.kafka.clients.consumer.KafkaConsumer;
 import org.apache.kafka.clients.consumer.OffsetAndMetadata;
 import org.apache.kafka.common.TopicPartition;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 /*
  * Runnable 인터페이스를 사용하는 이유
@@ -46,7 +48,7 @@ import org.apache.kafka.common.TopicPartition;
  */
 
 public class ConsumerRunner implements Runnable{
-    private static final int MAX_RETRY = 3; // 최대 재시도 횟수
+    private static final AtomicInteger MAX_RETRY = new AtomicInteger(3); // 최대 재시도 횟수
     private static final long RETRY_INTERVAL_MS = 1000; // 재시도 간격 (밀리초)
 
     private final String topic;
@@ -74,23 +76,26 @@ public class ConsumerRunner implements Runnable{
                 }
                 asyncCommitWithRetry(consumer, MAX_RETRY);
             }
+        } catch (Exception e) {
+            e.printStackTrace();
         } finally {
             consumer.close();
         }
     }
 
     // 메시지 처리 로직
-    private void processRecord(ConsumerRecord<String, String> record) {
-        System.out.printf("Processed record with key %s and value %s%n", record.key(), record.value());
+    private void processRecord(ConsumerRecord<String, String> record) throws JsonMappingException, JsonProcessingException{
+        ObjectMapper mapper = new ObjectMapper();
+        HashMap<String, String> value = mapper.readValue(record.value(), HashMap.class);
+        System.out.printf("Processed record with key %s and value %s%n", record.key(), value);
     }
 
     
     // 비동기 커밋 및 재시도 로직
-    private static void asyncCommitWithRetry(KafkaConsumer<String, String> consumer, int remainingRetries) {
+    private static void asyncCommitWithRetry(KafkaConsumer<String, String> consumer, AtomicInteger remainingRetries) {
         consumer.commitAsync((offsets, exception) -> {
             if (exception != null) {
-                System.out.println("Commit failed, retrying...: " + remainingRetries);
-                if (remainingRetries > 0) {
+                if (remainingRetries.get() > 0) {
                     retryCommit(consumer, remainingRetries);
                 } else {
                     handleCommitFailure(offsets, exception);
@@ -100,14 +105,16 @@ public class ConsumerRunner implements Runnable{
     }
 
     // 커밋 재시도 로직
-    private static void retryCommit(KafkaConsumer<String, String> consumer, int remainingRetries) {
+    private static void retryCommit(KafkaConsumer<String, String> consumer, AtomicInteger remainingRetries) {
+        System.out.println(consumer + "Retrying commit...: " + remainingRetries);
         try {
             Thread.sleep(RETRY_INTERVAL_MS);
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
             return;
         }
-        asyncCommitWithRetry(consumer, remainingRetries - 1);
+        remainingRetries.decrementAndGet();
+        asyncCommitWithRetry(consumer, remainingRetries);
     }
 
     // 실패한 offset 저장 로직

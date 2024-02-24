@@ -1,4 +1,4 @@
-package com.example.myProject.TestDataGenerator.util;
+package com.example.myProject.testDataGenerator.util;
 
 import java.util.Properties;
 
@@ -8,7 +8,8 @@ import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.clients.producer.ProducerRecord;
 import org.apache.kafka.common.Uuid;
 
-import com.example.myProject.TestDataGenerator.domain.FinancialAction;
+import com.example.myProject.common.domain.FinancialAction;
+
 
 public class EventProducer {
     private Producer<String, String> producer;

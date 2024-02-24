@@ -1,4 +1,4 @@
-package com.example.myProject.TestDataGenerator;
+package com.example.myProject.testDataGenerator;
 
 import java.time.LocalDateTime;
 import java.util.Optional;
@@ -6,13 +6,13 @@ import java.util.Random;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-import com.example.myProject.TestDataGenerator.domain.Bank;
-import com.example.myProject.TestDataGenerator.domain.Customer;
-import com.example.myProject.TestDataGenerator.domain.FinancialAction;
-import com.example.myProject.TestDataGenerator.util.EventProducer;
-import com.example.myProject.TestDataGenerator.util.LogMaker;
-import com.example.myProject.TestDataGenerator.util.RandomMaker;
-import com.example.myProject.TestDataGenerator.util.SessionManager;
+import com.example.myProject.common.domain.Bank;
+import com.example.myProject.common.domain.Customer;
+import com.example.myProject.common.domain.FinancialAction;
+import com.example.myProject.testDataGenerator.util.EventProducer;
+import com.example.myProject.testDataGenerator.util.EventLogMaker;
+import com.example.myProject.testDataGenerator.util.RandomMaker;
+import com.example.myProject.testDataGenerator.util.SessionManager;
 
 public class TestDataGenerator {
     private FinancialAction[] actions = { FinancialAction.DEPOSIT, FinancialAction.TRANSFER, FinancialAction.WITHDRAWAL };
@@ -21,7 +21,7 @@ public class TestDataGenerator {
     private SessionManager sessionManager = new SessionManager();
 
     RandomMaker rMaker = new RandomMaker();
-    LogMaker logMaker = new LogMaker();
+    EventLogMaker logMaker = new EventLogMaker();
     Random random = new Random();
     Bank bank = new Bank();
 
@@ -51,20 +51,21 @@ public class TestDataGenerator {
         }
     }
 
-    // 단일 고객 거래 시뮬레이션
-    private void SimulateSingleCustomer(long customerId, EventProducer producer) {
-        // 중복 세션 체크
+    // 단일 고객 거래 시뮬레이션 
+    private void SimulateSingleCustomer(long customerId, EventProducer producer) {   
+        // 세션 체크         
         if (!sessionManager.startSession(customerId))
             return; 
 
         try {
             Optional<Customer> findCustomer = bank.findCustomer(customerId);
-
+            
             if (findCustomer.isPresent()) {
                 FinancialAction randomAction = actions[random.nextInt(actions.length)];
                 Customer customer = findCustomer.get();
                 sessionStartEvent(customer, producer);
                 processFinancialAction(customer, randomAction, producer);
+
             } else {
                 sessionStartEvent(customerId, producer);
                 processNewMemberAction(customerId, producer);                
@@ -78,22 +79,24 @@ public class TestDataGenerator {
     private void processFinancialAction(Customer customer, FinancialAction action, EventProducer producer) {
         switch (action) {
             case DEPOSIT:
-                customer.deposit(rMaker.generateAmount());
-                depositEvent(customer, producer);
+                long depositAmount = rMaker.generateAmount();
+                customer.deposit(depositAmount);                
+                depositEvent(customer, depositAmount, producer);
                 break;
 
             case TRANSFER:
                 String recevingBank = rMaker.generateBankName();
                 String recevingAccount = rMaker.generateAccountNumber();
-                String recevingName = rMaker.generateName();
-                long amount = rMaker.generateAmount();
-                if(customer.transfer(amount, customer.getAccounts(), recevingBank, recevingAccount, recevingName))
-                    transferEvent(customer, recevingName, recevingBank, recevingAccount, recevingAccount, amount, producer);
+                String recevingHolder = rMaker.generateName();
+                long transferAmount = rMaker.generateAmount();
+                if (customer.transfer(recevingBank, recevingAccount, recevingHolder, transferAmount))
+                    transferEvent(customer, recevingBank, recevingAccount, recevingHolder, transferAmount, producer);
                 break;
 
             case WITHDRAWAL:
-                if(customer.withdraw(rMaker.generateAmount()));
-                    withdrawEvent(customer, producer);
+                long withdrawAmount = rMaker.generateAmount();
+                if(customer.withdraw(withdrawAmount));
+                    withdrawEvent(customer, withdrawAmount, producer);
                 break;
 
             default:
@@ -104,7 +107,7 @@ public class TestDataGenerator {
     // 고객 가입 & 계좌 개설
     private void processNewMemberAction(long customerId, EventProducer producer) {
         // customer signup
-        Customer newCustomer = new Customer(customerId, rMaker.generateName(), rMaker.generateBirth());
+        Customer newCustomer = new Customer(customerId, rMaker.generateName(), rMaker.generateBirth(), LocalDateTime.now());
         bank.signupCustomer(newCustomer);
         signUpEvent(newCustomer, producer);
 
@@ -130,33 +133,47 @@ public class TestDataGenerator {
     private void signUpEvent(Customer customer, EventProducer producer) {
         producer.send(FinancialAction.SIGNUP,
                 String.valueOf(customer.getCustomerId()),
-                logMaker.logSignUp(customer, LocalDateTime.now()));
+                logMaker.logSignUp(customer.getCustomerNumber(), 
+                                    customer.getName(),
+                                    customer.getDateOfBirth(), 
+                                    LocalDateTime.now()));
     }
 
     private void openAccountEvent(Customer customer, EventProducer producer) {
         producer.send(FinancialAction.OPEN_ACCOUNT,
                 String.valueOf(customer.getCustomerId()),
-                logMaker.logAccountOpening(customer, LocalDateTime.now()));
+                logMaker.logAccountOpening(customer.getCustomerNumber(), 
+                                            customer.getAccount().getAccountNumber(),
+                                            LocalDateTime.now()));
     }
 
-    public void depositEvent(Customer customer, EventProducer producer) {
+    public void depositEvent(Customer customer, long depositAmout, EventProducer producer) {
         producer.send(FinancialAction.DEPOSIT,
                 String.valueOf(customer.getCustomerId()),
-                logMaker.logDeposit(customer, LocalDateTime.now()));
+                logMaker.logDeposit(customer.getCustomerNumber(), 
+                                    customer.getAccount().getAccountNumber(),
+                                    depositAmout, LocalDateTime.now()));
     }
 
-    public void transferEvent(Customer customer, String remittanceAccountNumber, 
-                String receivingBank, String receivingAccountNumber, 
+    
+    public void transferEvent(Customer customer, String receivingBank, String receivingAccountNumber,
                 String receivingAccountHolder, long transferAmount, EventProducer producer) {
         producer.send(FinancialAction.TRANSFER,
                 String.valueOf(customer.getCustomerId()),
-                logMaker.logTransfer(customer,remittanceAccountNumber, receivingBank,
-                        receivingAccountNumber, receivingAccountHolder,transferAmount, LocalDateTime.now()));
+                logMaker.logTransfer(customer,
+                                     customer.getAccount().getAccountNumber(),
+                                     receivingBank,
+                                     receivingAccountNumber, 
+                                     receivingAccountHolder,
+                                     transferAmount, LocalDateTime.now()));
     }
 
-    public void withdrawEvent(Customer customer, EventProducer producer) {
+    public void withdrawEvent(Customer customer, long withdrawAmount, EventProducer producer) {
         producer.send(FinancialAction.WITHDRAWAL,
                 String.valueOf(customer.getCustomerId()),
-                logMaker.logWithdrawal(customer, LocalDateTime.now()));
+                logMaker.logWithdrawal(customer.getCustomerNumber(),
+                                        customer.getAccount().getAccountNumber(),
+                                        withdrawAmount,     
+                                        LocalDateTime.now()));
     }
 }

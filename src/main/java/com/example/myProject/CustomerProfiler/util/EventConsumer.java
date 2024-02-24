@@ -1,9 +1,9 @@
-package com.example.myProject.CustomerProfiler.util;
+package com.example.myProject.customerProfiler.util;
 
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.common.serialization.StringDeserializer;
 
-import com.example.myProject.CustomerProfiler.domain.FinancialAction;
+import com.example.myProject.customerProfiler.domain.FinancialAction;
 
 import java.util.Properties;
 import java.util.Arrays;
@@ -39,7 +39,7 @@ public class EventConsumer {
     }
 
     public void consumeEvent() {
-        ExecutorService executor = Executors.newFixedThreadPool(topics.length * 5);                 
+        ExecutorService executor = Executors.newFixedThreadPool(topics.length * consumerCount);                 
 
         // 토픽별 컨슈머 그룹 및 컨슈머 개수 할당
         for (String topic : topics) {
