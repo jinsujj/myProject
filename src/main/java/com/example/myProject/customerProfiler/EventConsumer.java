@@ -37,7 +37,7 @@ public class EventConsumer {
         // 토픽별 컨슈머 그룹 및 컨슈머 개수 할당
         for (String topic : topics) {
             String groupId = "group_" + topic;
-            Thread.sleep(2000);
+            Thread.sleep(1000);
             for(int i =0; i< consumerCount; i++){
                 ConsumerRunner consumerRunner = new ConsumerRunner(topic, groupId, props, bank);
                 executor.submit(consumerRunner);

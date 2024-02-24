@@ -7,7 +7,6 @@ import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 
 import com.example.myProject.common.responseDto.CustomerInfo;
-import com.fasterxml.jackson.core.JsonProcessingException;
 
 
 public class Bank {
