@@ -30,7 +30,6 @@ public class EventConsumer {
         ExecutorService executor = Executors.newFixedThreadPool(consumerCount);                 
 
         String groupId = "group_" + financialEventsTopic;
-        Thread.sleep(1000);
         int count = consumerCount;
 
         for (int i = 0; i < count; i++) {
