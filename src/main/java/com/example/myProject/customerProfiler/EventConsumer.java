@@ -32,13 +32,19 @@ public class EventConsumer {
     }
 
     public void consume() throws InterruptedException {
-        ExecutorService executor = Executors.newFixedThreadPool(topics.length * consumerCount);                 
+        ExecutorService executor = Executors.newFixedThreadPool((topics.length * consumerCount) + consumerCount);                 
 
         // 토픽별 컨슈머 그룹 및 컨슈머 개수 할당
         for (String topic : topics) {
             String groupId = "group_" + topic;
             Thread.sleep(1000);
-            for(int i =0; i< consumerCount; i++){
+            int count = consumerCount;
+
+            // session_start 토픽의 경우 컨슈머 개수 2배로 할당
+            if (topic.equals(FinancialAction.SESSION_START.name())) 
+                count = consumerCount * 2;
+            
+            for(int i =0; i< count; i++){
                 ConsumerRunner consumerRunner = new ConsumerRunner(topic, groupId, props, bank);
                 executor.submit(consumerRunner);
             }

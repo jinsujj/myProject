@@ -21,7 +21,7 @@ public class App
     // Test Data Generator Config
     private static final int CUSTOMER_COUNT = 50000;    
     private static final int SIMULATANEOUS_CUSTOMER = 100;
-    private static final int INTERVAL_DELAY = 2000;
+    private static final int INTERVAL_DELAY = 1000;
 
     // Profiler Config
     private static final int CONSUMER_COUNT_PER_TOPIC = 10;
@@ -47,12 +47,12 @@ public class App
 
     private static void sparkApi(Bank bank) {
         port(8080);
+        // 전체 고객 목록 조회
         get("/customers", (req, res) -> {
             ObjectMapper mapper = new ObjectMapper();
             int page = Integer.parseInt(req.queryParams("page") != null ? req.queryParams("page") : "1");
             int size = Integer.parseInt(req.queryParams("size") != null ? req.queryParams("size") : "100");
 
-            // 전체 고객 수
             String totalCustomers = bank.customerSize();
             List<CustomerInfo> customerList = bank.customerList(page, size);
 
@@ -66,6 +66,7 @@ public class App
             return mapper.writeValueAsString(response);
         });
 
+        // 고객 상세 조회
         get("/customer/:customerNumber", (req, res) -> {
             String customerNumber = req.params(":customerNumber");
             Optional<Customer> findCustomer = bank.findCustomerByNumber(customerNumber);
@@ -79,8 +80,9 @@ public class App
             res.type("application/json");
             return customerInfo.toJson();
             
-        });
-
+        }); 
+        
+        // 고객 계좌 조회
         get("/customer/:customerNumber/account", (req, res) -> {
             String customerNumber = req.params(":customerNumber");
             Optional<Account> findAccount = bank.findAccountByCustomerName(customerNumber);

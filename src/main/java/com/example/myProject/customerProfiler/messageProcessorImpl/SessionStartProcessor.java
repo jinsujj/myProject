@@ -17,7 +17,9 @@ public class SessionStartProcessor implements MessageProcessor {
         SessionStartLog sessionStartLog = mapper.readValue(record.value(), SessionStartLog.class);
 
         customerNumber = sessionStartLog.getCustomerNumber();
-
+        if (customerNumber.isEmpty())
+            return;
+            
         bank.findCustomerByNumber(customerNumber).ifPresent(customer -> {
             customer.addSession();
         });

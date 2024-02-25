@@ -1,8 +1,11 @@
 package com.example.myProject.customerProfiler.messageProcessorImpl;
 
+import java.util.Optional;
+
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 
 import com.example.myProject.common.domain.Bank;
+import com.example.myProject.common.domain.Customer;
 import com.example.myProject.common.financialLog.v1.WithdrawLog;
 import com.example.myProject.customerProfiler.MessageProcessor;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -20,11 +23,15 @@ public class WithdrawalProcessor implements MessageProcessor {
         customerNumber = withdrawLog.getCustomerNumber();
         withdrawAmount = withdrawLog.getWithdrawAmount();
 
-        bank.findCustomerByNumber(customerNumber).ifPresent(customer -> {
+        Optional<Customer> customerByNumber = bank.findCustomerByNumber(customerNumber);
+        if(customerByNumber.isPresent()){
+            Customer customer = customerByNumber.get();
             customer.addSession();
             customer.withdraw(withdrawAmount);
-        });
-        
-        System.out.println("Withdrawal: "+withdrawLog.toJson());
+            System.out.println("Withdrawal: " + withdrawLog.toJson());
+        }
+        else{
+            System.out.println("'Withdrawal' Customer not found  : " + customerNumber);
+        }
     }
 }

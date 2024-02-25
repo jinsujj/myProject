@@ -1,9 +1,12 @@
 package com.example.myProject.customerProfiler.messageProcessorImpl;
 
 
+import java.util.Optional;
+
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 
 import com.example.myProject.common.domain.Bank;
+import com.example.myProject.common.domain.Customer;
 import com.example.myProject.common.financialLog.v1.DepositLog;
 import com.example.myProject.customerProfiler.MessageProcessor;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -21,12 +24,14 @@ public class DepositProcessor implements MessageProcessor{
         customerNumber = depositLog.getCustomerNumber();
         depositAmount = depositLog.getDepositAmount();
 
-        bank.findCustomerByNumber(customerNumber).ifPresent(customer -> {
+        Optional<Customer> customerOptional = bank.findCustomerByNumber(customerNumber);
+        if (customerOptional.isPresent()) {
+            Customer customer = customerOptional.get();
             customer.addSession();
             customer.deposit(depositAmount);
-        });
-
-        System.out.println("Deposit:" +depositLog.toJson());
+            System.out.println("Deposit:" + depositLog.toJson());
+        } else {
+            System.out.println("'Deposit' Customer not found  : " + customerNumber);
+        }
     }
-    
 }

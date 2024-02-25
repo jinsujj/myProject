@@ -1,8 +1,11 @@
 package com.example.myProject.customerProfiler.messageProcessorImpl;
 
+import java.util.Optional;
+
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 
 import com.example.myProject.common.domain.Bank;
+import com.example.myProject.common.domain.Customer;
 import com.example.myProject.common.financialLog.v1.AccountOpeningLog;
 import com.example.myProject.customerProfiler.MessageProcessor;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -21,15 +24,16 @@ public class OpenAccountProcessor implements MessageProcessor {
         accountNumber = openAccountLog.getAccountNumber();
         customerNumber = openAccountLog.getCustomerNumber();
 
-        bank.findCustomerByNumber(customerNumber).ifPresent(customer -> {
+        Optional<Customer> customerByNumber = bank.findCustomerByNumber(customerNumber);
+
+        if(customerByNumber.isPresent()){
+            Customer customer = customerByNumber.get();
             customer.addSession();
             customer.openAccount(accountNumber);
-        });
-
-        System.out.println("OpenAccount: "+ openAccountLog.toJson());
-        
+            System.out.println("OpenAccount: " + openAccountLog.toJson());
+        }
+        else{
+            System.out.println("'Open Acount' Customer not found  : " + customerNumber);
+        }
     }
-
-    
-
 }

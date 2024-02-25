@@ -1,8 +1,11 @@
 package com.example.myProject.customerProfiler.messageProcessorImpl;
 
+import java.util.Optional;
+
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 
 import com.example.myProject.common.domain.Bank;
+import com.example.myProject.common.domain.Customer;
 import com.example.myProject.common.financialLog.v1.TransferLog;
 import com.example.myProject.customerProfiler.MessageProcessor;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -26,12 +29,15 @@ public class TransferProcessor implements MessageProcessor{
         receivingBank = transferLog.getReceivingBank();
         transferAmount = transferLog.getTransferAmount();
 
-        bank.findCustomerByNumber(customerNumber).ifPresent(customer -> {
+        Optional<Customer> customerByNumber = bank.findCustomerByNumber(customerNumber);
+        if(customerByNumber.isPresent()){
+            Customer customer = customerByNumber.get();
             customer.addSession();
-
             customer.transfer(receivingBank, receivingAccountNumber, receivingAccountHolder, transferAmount);
-        });
-
-        System.out.println("Transfer: "+transferLog.toJson());
+            System.out.println("Transfer: " + transferLog.toJson());
+        }
+        else{
+            System.out.println("'Transfer' Customer not found  : " + customerNumber);
+        }
     }
 }
