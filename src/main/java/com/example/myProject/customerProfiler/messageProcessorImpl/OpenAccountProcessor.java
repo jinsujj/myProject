@@ -30,7 +30,7 @@ public class OpenAccountProcessor implements MessageProcessor {
             Customer customer = customerByNumber.get();
             customer.addSession();
             customer.openAccount(accountNumber);
-            System.out.println("OpenAccount: " + openAccountLog.toJson());
+            System.out.println(openAccountLog.toJson());
         }
         else{
             System.out.println("'Open Acount' Customer not found  : " + customerNumber);

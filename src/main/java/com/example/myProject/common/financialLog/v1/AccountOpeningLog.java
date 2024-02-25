@@ -3,6 +3,7 @@ package com.example.myProject.common.financialLog.v1;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
+import com.example.myProject.common.domain.FinancialAction;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -10,6 +11,7 @@ public class AccountOpeningLog {
     private String customerNumber;
     private String accountNumber;
     private String accountOpeningTime;
+    private String action;
 
     private transient ObjectMapper mapper = new ObjectMapper();
     private transient DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
@@ -21,6 +23,7 @@ public class AccountOpeningLog {
         this.customerNumber = customerNumber;
         this.accountNumber = accountNumber;
         this.accountOpeningTime = accountOpeningTime.format(formatter);
+        this.action = FinancialAction.OPEN_ACCOUNT.name();
     }
 
     public String getCustomerNumber() {
@@ -33,6 +36,10 @@ public class AccountOpeningLog {
 
     public String getAccountOpeningTime() {
         return accountOpeningTime;
+    }
+
+    public String getAction() {
+        return action;
     }
 
     public String toJson() throws JsonProcessingException {

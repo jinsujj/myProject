@@ -29,7 +29,7 @@ public class DepositProcessor implements MessageProcessor{
             Customer customer = customerOptional.get();
             customer.addSession();
             customer.deposit(depositAmount);
-            System.out.println("Deposit:" + depositLog.toJson());
+            System.out.println(depositLog.toJson());
         } else {
             System.out.println("'Deposit' Customer not found  : " + customerNumber);
         }

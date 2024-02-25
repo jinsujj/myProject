@@ -27,13 +27,11 @@ public class Account {
 
     public void deposit(long amount) {
         this.balance += amount;
-        System.out.println("CustomerId: " + customerId + " Deposit: " + amount + " Current balance: " + this.balance);
         addTransaction(FinancialAction.DEPOSIT, amount);
     }
 
     public boolean withdraw(long amount) {
         if(this.balance < amount){ 
-            System.out.println("CustomerId: " + customerId+ " Insufficient balance for withdrawl.");
             return false;
         }
             
@@ -44,13 +42,11 @@ public class Account {
 
     public boolean transfer(String receivingBank, String receivingAccountNumber, String receivingAccountHolder, long amount) {
         if(this.balance < amount) {
-            System.out.println("CustomerId: "+ customerId+ " Insufficient balance for transfer." +" Current balance: " + this.balance + " Transfer amount: " + amount);
             return false;
         }
 
         this.balance -= amount;
         addTransaction(FinancialAction.TRANSFER, amount);
-        System.out.println("CustomerId: "+ customerId+ " Transfer: " + amount + " Current balance: " + this.balance + " Receiving bank: " + receivingBank + " Receiving account number: " + receivingAccountNumber + " Receiving account holder: " + receivingAccountHolder);
         return true;
     }
 

@@ -23,7 +23,6 @@ public class SessionStartProcessor implements MessageProcessor {
         bank.findCustomerByNumber(customerNumber).ifPresent(customer -> {
             customer.addSession();
         });
-
-        System.out.println("SessionStart: "+sessionStartLog.toJson());
+        System.out.println(sessionStartLog.toJson());
     }
 }

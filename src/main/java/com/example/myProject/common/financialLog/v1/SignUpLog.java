@@ -1,5 +1,6 @@
 package com.example.myProject.common.financialLog.v1;
 
+import com.example.myProject.common.domain.FinancialAction;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -10,6 +11,7 @@ public class SignUpLog {
     private String customerName;
     private String dateOfBirth;
     private String registrationTime;
+    private String action;
 
     private transient ObjectMapper mapper = new ObjectMapper();
 
@@ -21,6 +23,7 @@ public class SignUpLog {
         this.customerName = customerName;
         this.dateOfBirth = dateOfBirth;
         this.registrationTime = registrationTime;
+        this.action = FinancialAction.SIGNUP.name();
     }
 
     public String getCustomerNumber() {
@@ -37,6 +40,10 @@ public class SignUpLog {
 
     public String getRegistrationTime() {
         return registrationTime;
+    }
+
+    public String getAction() {
+        return action;
     }
 
     public String toJson() throws JsonProcessingException {

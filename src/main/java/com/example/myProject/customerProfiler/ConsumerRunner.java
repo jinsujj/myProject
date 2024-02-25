@@ -19,6 +19,7 @@ import org.apache.kafka.common.serialization.StringDeserializer;
 
 import com.example.myProject.common.domain.Bank;
 import com.example.myProject.common.domain.FinancialAction;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 /*
  * Runnable 인터페이스를 사용하는 이유
@@ -45,20 +46,6 @@ import com.example.myProject.common.domain.FinancialAction;
  * ExecutorService 를 사용할 때, Runnable 또는 Callable 인터페이스를 구현하는 클래스의 인스턴스를 제출할 수 있습니다.
  * Runnable 을 사용하면 이러한 고수준 동시성 몌ㅑ의 호환성이 보장됩니다.
  */
-
-
- /*
-  * - 고객
-        1. 고객명
-        2. 생년월일
-        3. 가입일시
-        4. 누적 세션 횟수
- 
-    - 계좌
-        1. 잔액
-        2. 거래유형(입금, 출금, 이체)별 최소, 최대 거래금액
-        3. 거래유형 구분없이 최근 3건의 거래내역
-  */
 
 public class ConsumerRunner implements Runnable{
     private static final AtomicInteger MAX_RETRY = new AtomicInteger(3); // 최대 재시도 횟수
@@ -97,7 +84,9 @@ public class ConsumerRunner implements Runnable{
                 ConsumerRecords<String, String> records = consumer.poll(Duration.ofMillis(CONSUME_INTERVAL_MS));
                 for (ConsumerRecord<String, String> record : records) {
                     
-                    FinancialAction action = FinancialAction.valueOf(record.topic());
+                    String actionValue = new ObjectMapper().readTree(record.value()).get("action").asText();
+                    FinancialAction action = FinancialAction.valueOf(actionValue.toUpperCase());
+
                     MessageProcessor processor = new ProcessorFactory().getProcessor(action);
                     if (processor != null) {
                         processor.process(record,bank);

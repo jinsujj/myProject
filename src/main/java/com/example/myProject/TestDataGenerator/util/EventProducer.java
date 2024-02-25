@@ -8,13 +8,12 @@ import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.clients.producer.ProducerRecord;
 import org.apache.kafka.common.Uuid;
 
-import com.example.myProject.common.domain.FinancialAction;
-
 
 public class EventProducer {
     private Producer<String, String> producer;
     private String transactionIdPrefix = "trans-"; 
     private Properties props = new Properties();
+    private final String financialEventsTopic = "FinancialEvents";
 
     public EventProducer(){
         // Producer 설정
@@ -33,11 +32,11 @@ public class EventProducer {
         producer.initTransactions();
     }
 
-    // topic은 금융 거래 명, key는 고객 ID, value는 로그 내역
-    public void send(FinancialAction topic, String key, String value) {
+    // key는 고객 ID, value는 로그 내역
+    public void send(String key, String value) {
         try {
             producer.beginTransaction();
-            producer.send(new ProducerRecord<>(topic.name(), key, value));
+            producer.send(new ProducerRecord<>(financialEventsTopic, key, value));
             producer.commitTransaction();
         } catch (Exception e) {
             System.out.println("Failed to send message: " + e.getMessage());

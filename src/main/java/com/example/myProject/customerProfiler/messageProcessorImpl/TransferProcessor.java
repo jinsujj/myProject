@@ -34,7 +34,7 @@ public class TransferProcessor implements MessageProcessor{
             Customer customer = customerByNumber.get();
             customer.addSession();
             customer.transfer(receivingBank, receivingAccountNumber, receivingAccountHolder, transferAmount);
-            System.out.println("Transfer: " + transferLog.toJson());
+            System.out.println(transferLog.toJson());
         }
         else{
             System.out.println("'Transfer' Customer not found  : " + customerNumber);

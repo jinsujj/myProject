@@ -132,43 +132,41 @@ public class TestDataGenerator {
     
     // Kafka Producer에 이벤트 전송
     private void sessionStartEvent(long customerId, EventProducer producer) throws JsonProcessingException {
-        producer.send(FinancialAction.SESSION_START, String.valueOf(customerId),
+        producer.send(String.valueOf(customerId),
                  new SessionStartLog("", LocalDateTime.now()).toJson());
     }
 
     private void sessionStartEvent(Customer customer, EventProducer producer) throws JsonProcessingException {
-        producer.send(FinancialAction.SESSION_START,String.valueOf(customer.getCustomerId()),
+        producer.send(String.valueOf(customer.getCustomerId()),
                 new SessionStartLog(customer.getCustomerNumber(), LocalDateTime.now()).toJson());
     }
 
     private void signUpEvent(Customer customer, EventProducer producer) throws JsonProcessingException {
-        producer.send(FinancialAction.SIGNUP,String.valueOf(customer.getCustomerId()),
+        producer.send(String.valueOf(customer.getCustomerId()),
                 new SignUpLog(customer.getCustomerNumber(),
                                 customer.getName(),
                                 customer.getDateOfBirth(),
                                 customer.getJoinDateTime()).toJson());
-                
     }
 
     private void openAccountEvent(Customer customer, EventProducer producer) throws JsonProcessingException {
-        producer.send(FinancialAction.OPEN_ACCOUNT,String.valueOf(customer.getCustomerId()),
+        producer.send(String.valueOf(customer.getCustomerId()),
                 new AccountOpeningLog(customer.getCustomerNumber(),
                                         customer.getAccount().getAccountNumber(),
                                         LocalDateTime.now()).toJson());
     }
 
     public void depositEvent(Customer customer, long depositAmout, EventProducer producer) throws JsonProcessingException {
-        producer.send(FinancialAction.DEPOSIT,String.valueOf(customer.getCustomerId()),
+        producer.send(String.valueOf(customer.getCustomerId()),
                 new DepositLog(customer.getCustomerNumber(), 
                                 customer.getAccount().getAccountNumber(), 
                                 depositAmout, 
                                 LocalDateTime.now()).toJson());
     }
-
     
     public void transferEvent(Customer customer, String receivingBank, String receivingAccountNumber,
                 String receivingAccountHolder, long transferAmount, EventProducer producer) throws JsonProcessingException {
-        producer.send(FinancialAction.TRANSFER, String.valueOf(customer.getCustomerId()),
+        producer.send(String.valueOf(customer.getCustomerId()),
                 new TransferLog(customer.getCustomerNumber(),
                                 customer.getAccount().getAccountNumber(),
                                 receivingBank,
@@ -179,7 +177,7 @@ public class TestDataGenerator {
     }
 
     public void withdrawEvent(Customer customer, long withdrawAmount, EventProducer producer) throws JsonProcessingException {
-        producer.send(FinancialAction.WITHDRAWAL, String.valueOf(customer.getCustomerId()),
+        producer.send(String.valueOf(customer.getCustomerId()),
                 new WithdrawLog(customer.getCustomerNumber(), 
                                 customer.getAccount().getAccountNumber(), 
                                 withdrawAmount, 

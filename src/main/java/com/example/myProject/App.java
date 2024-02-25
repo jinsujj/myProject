@@ -19,19 +19,19 @@ import java.util.Optional;
 public class App 
 {   
     // Test Data Generator Config
-    private static final int CUSTOMER_COUNT = 50000;    
-    private static final int SIMULATANEOUS_CUSTOMER = 100;
-    private static final int INTERVAL_DELAY = 1000;
+    private static final int CUSTOMER_COUNT = 50000;        // 5만명 고객
+    private static final int SIMULATANEOUS_CUSTOMER = 100;  // 100명의 고객 동시 행동
+    private static final int INTERVAL_DELAY = 2000;         // (0 ~ 2000) 밀리초 간 랜덤 간격
 
-    // Profiler Config
-    private static final int CONSUMER_COUNT_PER_TOPIC = 10;
+    // Profiler Config                                      // '동시 고객' 보다 10% 더 많은 컨슈머
+    private static final int CONSUMER_COUNT = (int)(SIMULATANEOUS_CUSTOMER * 1.1); 
 
     public static void main( String[] args ) throws InterruptedException
     {   
         // profiler 모드로 실행
         if (args.length == 0 || args[0].equals("profiler")) {
             Bank bank = new Bank();
-            EventConsumer eventConsumer = new EventConsumer(CONSUMER_COUNT_PER_TOPIC,bank);
+            EventConsumer eventConsumer = new EventConsumer(CONSUMER_COUNT,bank);
             eventConsumer.consume();
             sparkApi(bank);
         }

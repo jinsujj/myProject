@@ -19,7 +19,6 @@ public class Bank {
     // 고객 등록
     public void signupCustomer(Customer customer) {
         customers.put(customer.getCustomerId(), customer);
-        System.out.println("Customer " + customer.getCustomerId() + " is signed up");
     }
 
     // 고객 조회

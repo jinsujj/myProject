@@ -2,10 +2,8 @@ package com.example.myProject.customerProfiler;
 
 
 import com.example.myProject.common.domain.Bank;
-import com.example.myProject.common.domain.FinancialAction;
 
 import java.util.Properties;
-import java.util.Arrays;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -18,36 +16,26 @@ import java.util.concurrent.Executors;
  */
 
 public class EventConsumer {
+    private final String financialEventsTopic = "FinancialEvents";
     private final int consumerCount;
-    private final String[] topics;
     private Properties props = new Properties();
     private Bank bank;
 
     public EventConsumer(int consumerCount, Bank bank) {
         this.bank = bank;
         this.consumerCount = consumerCount;
-        this.topics = Arrays.stream(FinancialAction.values())
-                    .map(Enum::name)
-                    .toArray(String[]::new);
     }
 
     public void consume() throws InterruptedException {
-        ExecutorService executor = Executors.newFixedThreadPool((topics.length * consumerCount) + consumerCount);                 
+        ExecutorService executor = Executors.newFixedThreadPool(consumerCount);                 
 
-        // 토픽별 컨슈머 그룹 및 컨슈머 개수 할당
-        for (String topic : topics) {
-            String groupId = "group_" + topic;
-            Thread.sleep(1000);
-            int count = consumerCount;
+        String groupId = "group_" + financialEventsTopic;
+        Thread.sleep(1000);
+        int count = consumerCount;
 
-            // session_start 토픽의 경우 컨슈머 개수 2배로 할당
-            if (topic.equals(FinancialAction.SESSION_START.name())) 
-                count = consumerCount * 2;
-            
-            for(int i =0; i< count; i++){
-                ConsumerRunner consumerRunner = new ConsumerRunner(topic, groupId, props, bank);
-                executor.submit(consumerRunner);
-            }
+        for (int i = 0; i < count; i++) {
+            ConsumerRunner consumerRunner = new ConsumerRunner(financialEventsTopic, groupId, props, bank);
+            executor.submit(consumerRunner);
         }
     }
 }

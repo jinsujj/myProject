@@ -28,7 +28,7 @@ public class WithdrawalProcessor implements MessageProcessor {
             Customer customer = customerByNumber.get();
             customer.addSession();
             customer.withdraw(withdrawAmount);
-            System.out.println("Withdrawal: " + withdrawLog.toJson());
+            System.out.println(withdrawLog.toJson());
         }
         else{
             System.out.println("'Withdrawal' Customer not found  : " + customerNumber);

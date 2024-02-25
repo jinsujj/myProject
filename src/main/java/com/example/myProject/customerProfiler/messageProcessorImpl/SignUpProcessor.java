@@ -28,7 +28,7 @@ public class SignUpProcessor implements MessageProcessor{
         Customer customer = new Customer(customerNumber,customerName, dateOfBirth, registrationTime);
         bank.signupCustomer(customer);
 
-        System.out.println("SignUp: "+signUpLog.toJson());
+        System.out.println(signUpLog.toJson());
     }
 
     
