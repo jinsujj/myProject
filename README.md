@@ -22,7 +22,7 @@ mvn exec:java -Dexec.args="profiler"
             └── com
                 └── example
                     └── myProject
-                        ├── App.java 
+                        ├── App.java                               --- Generator, Profiler 구동 객체
                         ├── common
                         │   ├── domain                             --- 도메인 정의
                         │   │   ├── Account.java
@@ -30,7 +30,7 @@ mvn exec:java -Dexec.args="profiler"
                         │   │   ├── Customer.java
                         │   │   ├── FinancialAction.java
                         │   │   └── Transaction.java
-                        │   ├── financialLog                       --- Kafka Event 발행 시, 이벤트 스키마 객체 
+                        │   ├── financialLog                       --- 카프카 이벤트 스키마 객체
                         │   │   └── v1
                         │   │       ├── AccountOpeningLog.java
                         │   │       ├── DepositLog.java

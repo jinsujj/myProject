@@ -14,6 +14,4 @@ public class SessionManager {
     public void endSession(long customerId) {
         activeSessions.remove(customerId);
     }
-
-
 }

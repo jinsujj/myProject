@@ -12,8 +12,14 @@ import org.apache.kafka.common.Uuid;
 public class EventProducer {
     private Producer<String, String> producer;
     private String transactionIdPrefix = "trans-"; 
-    private Properties props = new Properties();
     private final String financialEventsTopic = "FinancialEvents";
+    private Properties props = new Properties();
+
+    
+    public EventProducer(Producer<String, String> producer) {
+        this.producer = producer;
+        producer.initTransactions();
+    }
 
     public EventProducer(){
         // Producer 설정

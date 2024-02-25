@@ -39,22 +39,29 @@ public class Customer {
     public void openAccount(String accountNumber) {
         Account account = new Account(customerId, accountNumber);
         this.account = account;
+        System.out.println("Account " + accountNumber + " is opened for customer " + customerId);
     }
 
     public void deposit(long amount) {
         this.account.deposit(amount);
+        System.out.println("Customer " + customerId + " deposited " + amount + " won");
     }
 
     public boolean withdraw(long amount) {
-        if(account.withdraw(amount))
+        if(account.withdraw(amount)){
+            System.out.println("Customer " + customerId + " withdrew " + amount + " won");
             return true;
+        }
+            
 
         return false;
     }
 
     public boolean transfer(String receivingBank, String receivingAccountNumber, String receivingAccountHolder, long amount) {
-        if (account.transfer(receivingBank, receivingAccountNumber, receivingAccountHolder, amount))
+        if (account.transfer(receivingBank, receivingAccountNumber, receivingAccountHolder, amount)){
+            System.out.println("Customer " + customerId + " transferred " + amount + " won to " + receivingBank + " " + receivingAccountNumber + " " + receivingAccountHolder);
             return true;
+        }
 
         return false;
     }

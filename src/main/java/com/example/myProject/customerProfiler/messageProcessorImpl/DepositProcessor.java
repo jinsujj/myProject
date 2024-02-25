@@ -31,7 +31,7 @@ public class DepositProcessor implements MessageProcessor{
             customer.deposit(depositAmount);
             System.out.println(depositLog.toJson());
         } else {
-            System.out.println("'Deposit' Customer not found  : " + customerNumber);
+             System.out.println("'Deposit' Customer not found  : " + customerNumber);
         }
     }
 }

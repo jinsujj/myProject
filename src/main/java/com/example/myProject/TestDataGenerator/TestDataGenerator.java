@@ -26,25 +26,47 @@ public class TestDataGenerator {
     private final int customerCount;
     private final int simultaneousCustomer;
     private final int intervalDelay;
-    private SessionManager sessionManager = new SessionManager();
-    private DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
-    RandomMaker rMaker = new RandomMaker();
-    Random random = new Random();
-    Bank bank = new Bank();
+    private ExecutorService executorService;
+    private SessionManager sessionManager;
+    private EventProducer producer;
+    private Bank bank;
+    private DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+    private RandomMaker rMaker;
+    private Random random;
 
     public TestDataGenerator(int customerCount, int simultaneousCustomer ,int intervalDelay) {
         this.customerCount = customerCount;
         this.simultaneousCustomer = simultaneousCustomer;     
         this.intervalDelay = intervalDelay;
+        this.executorService = Executors.newFixedThreadPool(simultaneousCustomer);
+        this.sessionManager = new SessionManager();
+        this.producer = new EventProducer();
+        this.bank = new Bank();
+        this.rMaker = new RandomMaker();
     }
 
+    // for test
+    void setExecutorService(ExecutorService executorService) {
+        this.executorService = executorService;
+    }
+
+    void setSessionManager(SessionManager sessionManager) {
+        this.sessionManager = sessionManager;
+    }
+
+    void setEventProducer(EventProducer eventProducer) {
+        this.producer = eventProducer;
+    }
+
+    void setBank(Bank bank) {
+        this.bank = bank;
+    }
+
+    
     // 고객 간 동시 거래 시뮬레이션 (거래 간 랜덤 시간 간격으로 실행)    
     public void simulateCustomerBehavior(){
-        ExecutorService executorService = Executors.newFixedThreadPool(simultaneousCustomer);
-
         for (int i = 0; i < simultaneousCustomer; i++) {
-            EventProducer producer = new EventProducer();
             executorService.submit(() -> {
                 while (!Thread.currentThread().isInterrupted()) {
                     try {
@@ -156,7 +178,7 @@ public class TestDataGenerator {
                                         LocalDateTime.now()).toJson());
     }
 
-    public void depositEvent(Customer customer, long depositAmout, EventProducer producer) throws JsonProcessingException {
+    private void depositEvent(Customer customer, long depositAmout, EventProducer producer) throws JsonProcessingException {
         producer.send(String.valueOf(customer.getCustomerId()),
                 new DepositLog(customer.getCustomerNumber(), 
                                 customer.getAccount().getAccountNumber(), 
@@ -164,7 +186,7 @@ public class TestDataGenerator {
                                 LocalDateTime.now()).toJson());
     }
     
-    public void transferEvent(Customer customer, String receivingBank, String receivingAccountNumber,
+    private void transferEvent(Customer customer, String receivingBank, String receivingAccountNumber,
                 String receivingAccountHolder, long transferAmount, EventProducer producer) throws JsonProcessingException {
         producer.send(String.valueOf(customer.getCustomerId()),
                 new TransferLog(customer.getCustomerNumber(),
@@ -176,7 +198,7 @@ public class TestDataGenerator {
                                 LocalDateTime.now()).toJson());
     }
 
-    public void withdrawEvent(Customer customer, long withdrawAmount, EventProducer producer) throws JsonProcessingException {
+    private void withdrawEvent(Customer customer, long withdrawAmount, EventProducer producer) throws JsonProcessingException {
         producer.send(String.valueOf(customer.getCustomerId()),
                 new WithdrawLog(customer.getCustomerNumber(), 
                                 customer.getAccount().getAccountNumber(), 

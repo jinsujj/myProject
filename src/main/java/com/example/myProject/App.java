@@ -15,6 +15,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class App 
 {   
@@ -31,16 +33,20 @@ public class App
         // profiler 모드로 실행
         if (args.length == 0 || args[0].equals("profiler")) {
             Bank bank = new Bank();
+
             EventConsumer eventConsumer = new EventConsumer(CONSUMER_COUNT,bank);
             eventConsumer.consume();
             sparkApi(bank);
+            return;
         }
 
         // generator 모드로 실행
         if (args[0].equals("generator")) {
-            TestDataGenerator testDataGenerator = new TestDataGenerator(
+            TestDataGenerator generator = new TestDataGenerator(
                 CUSTOMER_COUNT, SIMULATANEOUS_CUSTOMER,INTERVAL_DELAY);
-            testDataGenerator.simulateCustomerBehavior();
+
+            generator.simulateCustomerBehavior();
+            return;
         }
     }
 

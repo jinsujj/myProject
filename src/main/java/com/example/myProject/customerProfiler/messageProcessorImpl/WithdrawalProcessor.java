@@ -31,7 +31,7 @@ public class WithdrawalProcessor implements MessageProcessor {
             System.out.println(withdrawLog.toJson());
         }
         else{
-            System.out.println("'Withdrawal' Customer not found  : " + customerNumber);
+             System.out.println("'Withdrawal' Customer not found  : " + customerNumber);
         }
     }
 }
