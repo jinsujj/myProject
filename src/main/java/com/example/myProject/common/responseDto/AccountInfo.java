@@ -13,6 +13,9 @@ public class AccountInfo {
     private long maxDepositAmount;
     private long maxwithdrawalAmount;
     private long maxTransferAmount;
+    private long minDepositAmount;
+    private long minWithdrawalAmount;
+    private long minTransferAmount;
     private List<Transaction> transactions;
 
     private transient ObjectMapper mapper = new ObjectMapper();
@@ -24,6 +27,9 @@ public class AccountInfo {
         this.maxwithdrawalAmount = account.getMaxwithdrawalAmount();
         this.maxTransferAmount = account.getMaxTransferAmount();
         this.transactions = account.getTransactions();
+        this.minDepositAmount = account.getMinDepositAmount();
+        this.minWithdrawalAmount = account.getMinWithdrawalAmount();
+        this.minTransferAmount = account.getMinTransferAmount();
     }
 
     public String getAccountNumber() {
@@ -44,6 +50,18 @@ public class AccountInfo {
 
     public long getMaxTransferAmount() {
         return maxTransferAmount;
+    }
+
+    public long getMinDepositAmount() {
+        return minDepositAmount;
+    }
+
+    public long getMinWithdrawalAmount() {
+        return minWithdrawalAmount;
+    }
+
+    public long getMinTransferAmount() {
+        return minTransferAmount;
     }
 
     public List<Transaction> getTransactions() {

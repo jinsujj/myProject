@@ -9,8 +9,11 @@ public class Account {
     private List<Transaction> transactions;
     private long balance;
     private long maxDepositAmount;
-    private long maxwithdrawalAmount;
+    private long maxWithdrawalAmount;
     private long maxTransferAmount;
+    private long minDepositAmount;
+    private long minWithdrawalAmount;
+    private long minTransferAmount;
 
     public Account() {
         this.transactions = new ArrayList<>();
@@ -22,8 +25,11 @@ public class Account {
         this.transactions = new ArrayList<>();
         this.balance = 0;
         this.maxDepositAmount = 0;
-        this.maxwithdrawalAmount = 0;
+        this.maxWithdrawalAmount = 0;
         this.maxTransferAmount = 0;
+        this.minDepositAmount = Long.MAX_VALUE;
+        this.minWithdrawalAmount = Long.MAX_VALUE;
+        this.minTransferAmount = Long.MAX_VALUE;
     }
 
     public void deposit(long amount) {
@@ -54,7 +60,7 @@ public class Account {
     // 거래 추가
     public void addTransaction(FinancialAction type, long amount) {
         transactions.add(new Transaction(type, amount));
-        checkMaxAmountPerType(type, amount);
+        checkAmountPerType(type, amount);
 
         // 최근 3건의 거래만 유지
         if (transactions.size() > 3) {
@@ -63,18 +69,27 @@ public class Account {
     }
 
     // 거래별 최대 금액 갱신
-    private void checkMaxAmountPerType(FinancialAction type, long amount) {
+    private void checkAmountPerType(FinancialAction type, long amount) {
         if (type == FinancialAction.DEPOSIT) {
             if (maxDepositAmount < amount) {
                 maxDepositAmount = amount;
             }
+            if (minDepositAmount > amount) {
+                minDepositAmount = amount;
+            }
         } else if (type == FinancialAction.WITHDRAWAL) {
-            if (maxwithdrawalAmount < amount) {
-                maxwithdrawalAmount = amount;
+            if (maxWithdrawalAmount < amount) {
+                maxWithdrawalAmount = amount;
+            }
+            if (minWithdrawalAmount > amount) {
+                minWithdrawalAmount = amount;
             }
         } else if (type == FinancialAction.TRANSFER) {
             if (maxTransferAmount < amount) {
                 maxTransferAmount = amount;
+            }
+            if (minTransferAmount > amount) {
+                minTransferAmount = amount;
             }
         }
     }
@@ -101,10 +116,31 @@ public class Account {
     }
 
     public long getMaxwithdrawalAmount() {
-        return maxwithdrawalAmount;
+        return maxWithdrawalAmount;
     }
 
     public long getMaxTransferAmount() {
         return maxTransferAmount;
+    }
+
+    public long getMinDepositAmount() {
+        if (minDepositAmount == Long.MAX_VALUE) 
+            return 0;
+        
+        return minDepositAmount;
+    }
+
+    public long getMinWithdrawalAmount() {
+        if (minWithdrawalAmount == Long.MAX_VALUE) 
+            return 0;
+
+        return minWithdrawalAmount;
+    }
+
+    public long getMinTransferAmount() {
+        if (minTransferAmount == Long.MAX_VALUE) 
+            return 0;
+            
+        return minTransferAmount;
     }
 }
