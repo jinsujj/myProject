@@ -70,25 +70,67 @@ mvn exec:java -Dexec.args="profiler"
                                 ├── RandomMaker.java               --- 랜덤 데이터 생성 객체
                                 └── SessionManager.java            --- 동일 고객 세션 관리 객체
 ```
+제너레이터(프로듀서) 에서 '전체 고객 수'와, '동시 실행 인원 수', '랜덤 실행 간격' 를 조정 해 실행할 수 있도록 파라미터로 설정해두었으며, 고객 별 동시 세션 접속을 못하도록 구현했습니다. \
+6가지 금융 로그는 각각의 financialLog 객체를 만들어, json 포맷으로 변환하기 쉽도록 스키마를 구현했습니다. 
+
+프로파일러는 인터페이스와 추상 팩토리 패턴을 활용해서, 각 금융 로그별 처리 클래스를 구현하면서도 결합을 느슨하게 했습니다.
+
 
 ## 카프카 설정 관련
-ETL 은 데이터의 누락, 중복이 모두 중요하기에, EOS(Exactly Once Sementatics) 설정을 해두었습니다. 
-프로파일러는 순서도 중요하기에 단일 토픽을 사용했으며, 프로듀서에서 고객id 별로 key 값을 두어 
-고객id 별로 특정 파티션에 쌓일 수 있도록 했습니다.  
+ETL 은 데이터의 누락, 중복이 모두 중요하기에, EOS(Exactly Once Sementatics) 설정을 해두었습니다. \
+프로파일러는 순서도 중요하기에 단일 토픽을 사용했으며, 프로듀서에서 고객id 별로 key 값을 두어 고객id 별로 특정 파티션에 쌓일 수 있도록 했습니다.  
 
-또한 컨슈머에서 제대로 commit 을 하지 못할 경우, 재시작 로직과 재시작 횟수 모두 소진 시 
+컨슈머에서 제대로 commit 을 하지 못할 경우, 재시작 로직과 재시작 횟수 모두 소진 시 
 임시 file 형태로 'topic', 'partition', 'offest' 정보를 저장해두도록 해뒀습니다.
 
-컨슈머 개수는, (동시에 행동하는 고객 수 * 1.1) 개수를 두어서, 이벤트가 쌓이는 부하를 감당하도록 설계했습니다.
+실시간성을 고려하기 위해서 배치 commit을 고려하지는 않았습니다. \
+그렇기에 컨슈머 개수는, (동시에 행동하는 고객 수 * 1.1) 개수를 두어서, 이벤트가 쌓이는 부하를 감당하도록 설계했습니다. \
 또한 이렇게 돌리기 위해서 kafka broker 의 파티션 갯수도 컨슈머 수와 동일하게 하여 100% 성능을 끌어내도록 했습니다.
-
-
 
 
 ## 테스트 코드 관련 
 > Kafka 서버 까지 모킹해서 테스트 코드를 구현하진 않았습니다.  \
 카프카 서버가 실행되어 있는 상태에서 테스트 시 정상 동작 확인했습니다.
 
+
+## Rest API 관련
+프로파일러에서 프로그램에서 데이터를 조회하기 위한 API 로 3가지 정도를 생각해봤습니다.
+- 고객 정보 조회 API 
+  - GET /customers?page=1&size=100  
+    - 요청 파라미터
+      - page : 조회하려는 페이지 번호 default 1
+      - size : 한 페이지당 표시할 고객 수 defalt 100
+    - 응답 형식
+      - totalCustomers: 전체 고객 수
+      - customers: 현재 페이지에 해당하는 고객 정보 리스트
+      - currentPage: 현재 페이지 번호
+      - pageSize: 요청에 따라 반환된 페이지 크기(고객수)
+
+- 특정 고객 조회 API
+  - GET /customer/:customerNumber
+    - 파라미터 설명
+      - customerNumber: 조회하려는 고객번호 ex) C101
+    - 응답 형식
+      - customerNumber  : 고객의 고유 번호
+      - name            : 고객 명
+      - birthDate       : 생년월일
+      - joinDateTime    : 가입날짜
+      - sessionCount    : 누적 세션 횟수
+
+- 특정 고객 계좌 조회 API 
+  - GET /customer/:customerNumber/account
+    - 파라미터 설명
+      - customerNumber: 조회하려는 고객번호 ex) C101
+    - 응답 형식
+      - accountNumber       : 계좌번호
+      - balance             : 잔액
+      - maxDepositAmount    : 최대 입금 금액
+      - minDepositAmount    : 최소 입금 금액
+      - maxWithdrawalAmount : 최대 인출 금액
+      - minWithdrawalAmount : 최소 인출 금액
+      - maxTransferAmount   : 최대 이체 금액
+      - maxTransferAmount   : 최소 이체 금액
+      - transactions        : 거래유형 구분없이 최근 3건의 거래내역
 
 ## 고민 포인트
 - OOP 설계 시, 해당 도메인 로직이 추가되면, 로직이 복잡해질 것이 예상되어, 요구사항에 좀 더 집중했습니다. 
