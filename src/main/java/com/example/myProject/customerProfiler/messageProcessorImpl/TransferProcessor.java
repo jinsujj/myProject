@@ -18,6 +18,7 @@ public class TransferProcessor implements MessageProcessor{
     private String receivingAccountNumber;
     private String receivingBank;
     private long transferAmount;
+    private String transferTime;
 
     @Override
     public void process(ConsumerRecord<String, String> record, Bank bank) throws JsonProcessingException {
@@ -28,12 +29,13 @@ public class TransferProcessor implements MessageProcessor{
         receivingAccountNumber = transferLog.getReceivingAccountNumber();
         receivingBank = transferLog.getReceivingBank();
         transferAmount = transferLog.getTransferAmount();
+        transferTime = transferLog.getTransferTime();
 
         Optional<Customer> customerByNumber = bank.findCustomerByNumber(customerNumber);
         if(customerByNumber.isPresent()){
             Customer customer = customerByNumber.get();
             customer.addSession();
-            customer.transfer(receivingBank, receivingAccountNumber, receivingAccountHolder, transferAmount);
+            customer.transfer(receivingBank, receivingAccountNumber, receivingAccountHolder, transferAmount,transferTime);
             System.out.println(transferLog.toJson());
         }
         else{

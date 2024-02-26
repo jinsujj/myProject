@@ -42,13 +42,13 @@ public class Customer {
         System.out.println("Account " + accountNumber + " is opened for customer " + customerId);
     }
 
-    public void deposit(long amount) {
-        this.account.deposit(amount);
+    public void deposit(long amount, String eventTime) {
+        this.account.deposit(amount, eventTime);
         System.out.println("Customer " + customerId + " deposited " + amount + " won");
     }
 
-    public boolean withdraw(long amount) {
-        if(account.withdraw(amount)){
+    public boolean withdraw(long amount, String eventTime) {
+        if(account.withdraw(amount, eventTime)){
             System.out.println("Customer " + customerId + " withdrew " + amount + " won");
             return true;
         }
@@ -56,8 +56,8 @@ public class Customer {
         return false;
     }
 
-    public boolean transfer(String receivingBank, String receivingAccountNumber, String receivingAccountHolder, long amount) {
-        if (account.transfer(receivingBank, receivingAccountNumber, receivingAccountHolder, amount)){
+    public boolean transfer(String receivingBank, String receivingAccountNumber, String receivingAccountHolder, long amount, String eventTime) {
+        if (account.transfer(receivingBank, receivingAccountNumber, receivingAccountHolder, amount, eventTime)){
             System.out.println("Customer " + customerId + " transferred " + amount + " won to " + receivingBank + " " + receivingAccountNumber + " " + receivingAccountHolder);
             return true;
         }

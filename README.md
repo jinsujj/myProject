@@ -18,7 +18,7 @@ http://localhost:9092, http://localhost:9093, http://localhost:9093
 mvn exec:java -Dexec.args="generator"
 
 ##  Profiler 파일 실행 
-mvn exec:java -Dexec.args="profiler"
+mvn exec:java -Dexec.args="profiler"   ..(실행되는데 조금 대기시간 필요)
 
 
 
@@ -78,7 +78,7 @@ mvn exec:java -Dexec.args="profiler"
 
 ## 카프카 설정 관련
 ETL 은 데이터의 누락, 중복이 모두 중요하기에, EOS(Exactly Once Sementatics) 설정을 해두었습니다. \
-프로파일러는 순서도 중요하기에 단일 토픽을 사용했으며, 프로듀서에서 고객id 별로 key 값을 두어 고객id 별로 특정 파티션에 쌓일 수 있도록 했습니다.  
+프로파일러는 순서도 중요하기에 단일 토픽을 사용했으며, 프로듀서에서 이벤트 발행 시, 고객id 별로 key 값을 두어 고객id 별로 특정 파티션에 쌓일 수 있도록 했습니다.  
 
 컨슈머에서 제대로 commit 을 하지 못할 경우, 재시작 로직과 재시작 횟수 모두 소진 시 
 임시 file 형태로 'topic', 'partition', 'offest' 정보를 저장해두도록 해뒀습니다.
@@ -133,7 +133,7 @@ ETL 은 데이터의 누락, 중복이 모두 중요하기에, EOS(Exactly Once 
       - transactions        : 거래유형 구분없이 최근 3건의 거래내역
 
 ## 고민 포인트
-- OOP 설계 시, 해당 도메인 로직이 추가되면, 로직이 복잡해질 것이 예상되어, 요구사항에 좀 더 집중했습니다. 
+- OOP 설계 시, 해당 도메인 로직이 추가되면, 로직이 복잡해질 것이 예상되어, 상상해서 구현하기보다는 요구사항에 좀 더 집중했습니다. 
  
 > - 1. 고객당 계좌 계수 \
   첫번째 세션에서만 계좌 개설을 하면 고객당 1개의 계좌만 가지나? \

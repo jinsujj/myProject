@@ -32,34 +32,34 @@ public class Account {
         this.minTransferAmount = Long.MAX_VALUE;
     }
 
-    public void deposit(long amount) {
+    public void deposit(long amount, String eventTime) {
         this.balance += amount;
-        addTransaction(FinancialAction.DEPOSIT, amount);
+        addTransaction(FinancialAction.DEPOSIT, amount, eventTime);
     }
 
-    public boolean withdraw(long amount) {
+    public boolean withdraw(long amount, String eventTime) {
         if(this.balance < amount){ 
             return false;
         }
             
         this.balance -= amount;
-        addTransaction(FinancialAction.WITHDRAWAL, amount);
+        addTransaction(FinancialAction.WITHDRAWAL, amount, eventTime);
         return true;
     }
 
-    public boolean transfer(String receivingBank, String receivingAccountNumber, String receivingAccountHolder, long amount) {
+    public boolean transfer(String receivingBank, String receivingAccountNumber, String receivingAccountHolder, long amount, String eventTime) {
         if(this.balance < amount) {
             return false;
         }
 
         this.balance -= amount;
-        addTransaction(FinancialAction.TRANSFER, amount);
+        addTransaction(FinancialAction.TRANSFER, amount, eventTime);
         return true;
     }
 
     // 거래 추가
-    public void addTransaction(FinancialAction type, long amount) {
-        transactions.add(new Transaction(type, amount));
+    public void addTransaction(FinancialAction type, long amount, String eventTime) {
+        transactions.add(new Transaction(type, amount, eventTime));
         checkAmountPerType(type, amount);
 
         // 최근 3건의 거래만 유지

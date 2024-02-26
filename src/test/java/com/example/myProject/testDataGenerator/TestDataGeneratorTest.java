@@ -19,9 +19,11 @@ import com.example.myProject.common.domain.FinancialAction;
 import com.example.myProject.testDataGenerator.util.EventProducer;
 import com.example.myProject.testDataGenerator.util.SessionManager;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import java.time.format.DateTimeFormatter;
+import java.time.LocalDateTime;
 
 public class TestDataGeneratorTest {
-
+    private DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
     private TestDataGenerator testDataGenerator;
     private ExecutorService executorService;
     private EventProducer producer;
@@ -95,12 +97,13 @@ public class TestDataGeneratorTest {
     @Test
     void testSimulateSingleCustomer_existingCustomer_transfer_with_proper_amount() throws JsonProcessingException{
         // given
+        String eventTime = LocalDateTime.now().format(formatter);
         FinancialAction transferAction = FinancialAction.TRANSFER;
         long customerId = 1L;
         long initAmount = 10000000;
 
         customer = new Customer(customerId, "name", "1993-01-01", "2024-01-01");
-        customer.deposit(initAmount);
+        customer.deposit(initAmount, eventTime);
         bank.signupCustomer(customer);
 
         // when
@@ -116,12 +119,13 @@ public class TestDataGeneratorTest {
     @Test
     void testSimulateSingleCustomer_existingCustomer_transfer_with_improper_amount() throws JsonProcessingException{
         // given
+        String eventTime = LocalDateTime.now().format(formatter);
         FinancialAction transferAction = FinancialAction.TRANSFER;
         long customerId = 1L;
         long initAmount = 500;
 
         customer = new Customer(customerId, "name", "1993-01-01", "2024-01-01");
-        customer.deposit(initAmount);
+        customer.deposit(initAmount, eventTime);
         bank.signupCustomer(customer);
         
         // when
@@ -137,12 +141,13 @@ public class TestDataGeneratorTest {
     @Test
     void testSimulateSingleCustomer_existingCustomer_withdrawal_with_proper_amount() throws JsonProcessingException{
         // given
+        String eventTime = LocalDateTime.now().format(formatter);
         FinancialAction withdrawalAction = FinancialAction.WITHDRAWAL;
         long customerId = 1L;
         long initAmount = 10000000;
 
         customer = new Customer(customerId, "name", "1993-01-01", "2024-01-01");
-        customer.deposit(initAmount);
+        customer.deposit(initAmount, eventTime);
         bank.signupCustomer(customer);
 
         // when
@@ -158,12 +163,13 @@ public class TestDataGeneratorTest {
     @Test
     void testSimulateSingleCustomer_existingCustomer_withdrawal_with_improper_amount() throws JsonProcessingException{
         // given
+        String eventTime = LocalDateTime.now().format(formatter);
         FinancialAction transferAction = FinancialAction.WITHDRAWAL;
         long customerId = 1L;
         long initAmount = 500;
 
         customer = new Customer(customerId, "name", "1993-01-01", "2024-01-01");
-        customer.deposit(initAmount);
+        customer.deposit(initAmount, eventTime);
         bank.signupCustomer(customer);
         
         // when
@@ -198,12 +204,13 @@ public class TestDataGeneratorTest {
     @Test
     void testProcessFinancialAction_deposit() throws JsonProcessingException{
         // given
+        String eventTime = LocalDateTime.now().format(formatter);
         FinancialAction depositAction = FinancialAction.DEPOSIT;
         long customerId = 1L;
         long initAmount = 500;
 
         customer = new Customer(customerId, "name", "1993-01-01", "2024-01-01");
-        customer.deposit(initAmount);
+        customer.deposit(initAmount, eventTime);
         bank.signupCustomer(customer);
 
         // when
@@ -218,12 +225,13 @@ public class TestDataGeneratorTest {
     @Test
     void testProcessFinancialAction_transfer_with_proper_amout() throws JsonProcessingException{
         // given
+        String eventTime = LocalDateTime.now().format(formatter);
         FinancialAction transferAction = FinancialAction.TRANSFER;
         long customerId = 1L;
         long initAmount = 10000000;
 
         customer = new Customer(customerId, "name", "1993-01-01", "2024-01-01");
-        customer.deposit(initAmount);
+        customer.deposit(initAmount, eventTime);
         bank.signupCustomer(customer);
 
         // when
@@ -238,12 +246,13 @@ public class TestDataGeneratorTest {
     @Test
     void testProcessFinancialAction_transwer_with_improper_amount() throws JsonProcessingException{
         // given
+        String eventTime = LocalDateTime.now().format(formatter);
         FinancialAction transferAction = FinancialAction.TRANSFER;
         long customerId = 1L;
         long initAmount = 500;
 
         customer = new Customer(customerId, "name", "1993-01-01", "2024-01-01");
-        customer.deposit(initAmount);
+        customer.deposit(initAmount, eventTime);
         bank.signupCustomer(customer);
 
         // when
@@ -258,12 +267,13 @@ public class TestDataGeneratorTest {
     @Test
     void testProcessFinancialAction_withdraw_with_proper_amount() throws JsonProcessingException{
         // given
+        String eventTime = LocalDateTime.now().format(formatter);
         FinancialAction withdrawalAction = FinancialAction.WITHDRAWAL;
         long customerId = 1L;
         long initAmount = 10000000;
 
         customer = new Customer(customerId, "name", "1993-01-01", "2024-01-01");
-        customer.deposit(initAmount);
+        customer.deposit(initAmount, eventTime);
         bank.signupCustomer(customer);
 
         // when
@@ -278,12 +288,13 @@ public class TestDataGeneratorTest {
     @Test
     void testProcessFinancialAction_withdraw_with_improper_amount() throws JsonProcessingException{
         // given
+        String eventTime = LocalDateTime.now().format(formatter);
         FinancialAction transferAction = FinancialAction.WITHDRAWAL;
         long customerId = 1L;
         long initAmount = 500;
 
         customer = new Customer(customerId, "name", "1993-01-01", "2024-01-01");
-        customer.deposit(initAmount);
+        customer.deposit(initAmount, eventTime);
         bank.signupCustomer(customer);
         
         // when

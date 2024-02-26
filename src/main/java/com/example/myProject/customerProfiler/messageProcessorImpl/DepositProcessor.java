@@ -16,6 +16,7 @@ public class DepositProcessor implements MessageProcessor{
     private ObjectMapper mapper = new ObjectMapper();
     private String customerNumber;
     private long depositAmount;
+    private String depositTime;
 
     @Override
     public void process(ConsumerRecord<String, String> record, Bank bank) throws JsonProcessingException {
@@ -23,12 +24,13 @@ public class DepositProcessor implements MessageProcessor{
 
         customerNumber = depositLog.getCustomerNumber();
         depositAmount = depositLog.getDepositAmount();
+        depositTime = depositLog.getDepositTime();
 
         Optional<Customer> customerOptional = bank.findCustomerByNumber(customerNumber);
         if (customerOptional.isPresent()) {
             Customer customer = customerOptional.get();
             customer.addSession();
-            customer.deposit(depositAmount);
+            customer.deposit(depositAmount, depositTime);
             System.out.println(depositLog.toJson());
         } else {
              System.out.println("'Deposit' Customer not found  : " + customerNumber);

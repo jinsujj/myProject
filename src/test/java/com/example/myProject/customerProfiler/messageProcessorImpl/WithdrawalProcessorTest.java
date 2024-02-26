@@ -12,8 +12,10 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 public class WithdrawalProcessorTest {
+    private DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
     private Bank bank;
     private Customer customer;
     private WithdrawalProcessor withdrawalProcessor;
@@ -27,6 +29,7 @@ public class WithdrawalProcessorTest {
     @Test
     void testProcess() throws JsonProcessingException {
         // given
+        var eventTime = LocalDateTime.now().format(formatter);
         var customerNumber = "C1234";
         var accountNumber = "111-222-333";
         var initAmount = 3000;
@@ -34,7 +37,7 @@ public class WithdrawalProcessorTest {
         var withdrawLog = new WithdrawLog(customerNumber, accountNumber, withdrawalAmount, LocalDateTime.now());
         var record = new ConsumerRecord<>("topic", 0, 0L, "key", withdrawLog.toJson());
         customer = new Customer(customerNumber, "name", "", "");
-        customer.deposit(initAmount);
+        customer.deposit(initAmount, eventTime);
         bank.signupCustomer(customer);
         var nowSessionCount = customer.getSessionCount();
 

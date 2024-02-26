@@ -108,7 +108,7 @@ public class TestDataGenerator {
         switch (action) {
             case DEPOSIT:
                 long depositAmount = rMaker.generateAmount();
-                customer.deposit(depositAmount);
+                customer.deposit(depositAmount, LocalDateTime.now().format(formatter));
                 depositEvent(customer, depositAmount, producer);
                 break;
 
@@ -117,13 +117,13 @@ public class TestDataGenerator {
                 var recevingAccount = rMaker.generateAccountNumber();
                 var recevingHolder = rMaker.generateName();
                 var transferAmount = rMaker.generateAmount();
-                if (customer.transfer(recevingBank, recevingAccount, recevingHolder, transferAmount))
+                if (customer.transfer(recevingBank, recevingAccount, recevingHolder, transferAmount,LocalDateTime.now().format(formatter)))
                     transferEvent(customer, recevingBank, recevingAccount, recevingHolder, transferAmount, producer);
                 break;
 
             case WITHDRAWAL:
                 long withdrawAmount = rMaker.generateAmount();
-                if (customer.withdraw(withdrawAmount))
+                if (customer.withdraw(withdrawAmount, LocalDateTime.now().format(formatter)))
                     withdrawEvent(customer, withdrawAmount, producer);
                 break;
 

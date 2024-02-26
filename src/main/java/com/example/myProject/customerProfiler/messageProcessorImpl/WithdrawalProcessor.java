@@ -15,6 +15,7 @@ public class WithdrawalProcessor implements MessageProcessor {
     private ObjectMapper mapper = new ObjectMapper();
     private String customerNumber;
     private long withdrawAmount;
+    private String withdrawTime;
 
     @Override
     public void process(ConsumerRecord<String, String> record, Bank bank) throws JsonProcessingException {
@@ -22,12 +23,13 @@ public class WithdrawalProcessor implements MessageProcessor {
 
         customerNumber = withdrawLog.getCustomerNumber();
         withdrawAmount = withdrawLog.getWithdrawAmount();
+        withdrawTime = withdrawLog.getWithdrawTime();
 
         Optional<Customer> customerByNumber = bank.findCustomerByNumber(customerNumber);
         if(customerByNumber.isPresent()){
             Customer customer = customerByNumber.get();
             customer.addSession();
-            customer.withdraw(withdrawAmount);
+            customer.withdraw(withdrawAmount, withdrawTime);
             System.out.println(withdrawLog.toJson());
         }
         else{

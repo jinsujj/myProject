@@ -7,8 +7,11 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import java.time.format.DateTimeFormatter;
+import java.time.LocalDateTime;
 
 public class CustomerTest {
+    private DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
     private Customer customer;
 
     @BeforeEach
@@ -48,10 +51,11 @@ public class CustomerTest {
     @Test
     void testDeposit_and_verify_balance() {
         // given
+        String eventTime = LocalDateTime.now().format(formatter);
         customer.openAccount("123-456-789");
 
         // when
-        customer.deposit(1000);
+        customer.deposit(1000, eventTime);
 
         // then
         assertEquals(1000, customer.getAccount().getBalance());
@@ -60,48 +64,52 @@ public class CustomerTest {
     @Test
     void testWithdraw_with_sufficient_balance() {
         // given
+        String eventTime = LocalDateTime.now().format(formatter);
         customer.openAccount("123-456-789");
-        customer.deposit(2000);
+        customer.deposit(2000, eventTime);
 
         // when , then
-        assertTrue(customer.withdraw(1000));
+        assertTrue(customer.withdraw(1000, LocalDateTime.now().format(formatter)));
         assertEquals(1000, customer.getAccount().getBalance());
     }
 
     @Test
     void testWithdraw_with_insufficient_balance() {
         // given
+        String eventTime = LocalDateTime.now().format(formatter);
         customer.openAccount("123-456-789");
 
         // when 
-        customer.deposit(500);
+        customer.deposit(500, eventTime);
 
         // then
-        assertFalse(customer.withdraw(1000)); // 잔액 부족
+        assertFalse(customer.withdraw(1000, LocalDateTime.now().format(formatter))); // 잔액 부족
     }
 
     @Test
     void testTransfer_with_sufficient_balance() {
         // given
+        String eventTime = LocalDateTime.now().format(formatter);
         customer.openAccount("123-456-789");
 
         // when
-        customer.deposit(3000);
+        customer.deposit(3000, eventTime);
 
         // then
-        assertTrue(customer.transfer("다른 은행", "987-654-321", "김철수", 1500));
+        assertTrue(customer.transfer("다른 은행", "987-654-321", "김철수", 1500, LocalDateTime.now().format(formatter)));
         assertEquals(1500, customer.getAccount().getBalance());
     }
 
     @Test
     void testTtransfer_with_insufficient_balance() {
         // given
+        String eventTime = LocalDateTime.now().format(formatter);
         customer.openAccount("123-456-789");
 
         // when
-        customer.deposit(1000);
+        customer.deposit(1000, eventTime);
 
         // then
-        assertFalse(customer.transfer("다른 은행", "987-654-321", "김철수", 1500)); // 잔액 부족
+        assertFalse(customer.transfer("다른 은행", "987-654-321", "김철수", 1500, LocalDateTime.now().format(formatter))); // 잔액 부족
     }
 }
