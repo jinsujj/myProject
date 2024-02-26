@@ -154,6 +154,16 @@ ETL 은 데이터의 누락, 중복이 모두 중요하기에, EOS(Exactly Once 
       - birthDate       : 생년월일
       - joinDateTime    : 가입날짜
       - sessionCount    : 누적 세션 횟수
+    - 예시
+      ```json
+        {
+            customerNumber: "C1",
+            name: "최지영",
+            birthDate: "1984-09-02",
+            joinDateTime: "2024-02-27 01:59:53",
+            sessionCount: 7
+        }
+      ```
 
 - 특정 고객 계좌 조회 API 
   - GET /customer/:customerNumber/account
@@ -169,6 +179,39 @@ ETL 은 데이터의 누락, 중복이 모두 중요하기에, EOS(Exactly Once 
       - maxTransferAmount   : 최대 이체 금액
       - maxTransferAmount   : 최소 이체 금액
       - transactions        : 거래유형 구분없이 최근 3건의 거래내역
+    - 예시
+      ```json
+        {
+            accountNumber: "368-575-429",
+            balance: 276932,
+            maxDepositAmount: 279042,
+            maxwithdrawalAmount: 0,
+            maxTransferAmount: 19999,
+            minDepositAmount: 17889,
+            minWithdrawalAmount: 0,
+            minTransferAmount: 19999,
+            transactions: [
+            {
+                type: "DEPOSIT",
+                amount: 279042,
+                eventTime: "2024-02-27 02:02:33"
+            },
+            {
+                type: "DEPOSIT",
+                amount: 17889,
+                eventTime: "2024-02-27 02:03:49"
+            },
+            {
+                type: "TRANSFER",
+                amount: 19999,
+                eventTime: "2024-02-27 02:07:53",
+                receivingBank: "토스은행",
+                receivingAccountNumber: "796-363-827",
+                receivingAccountHolder: "강진현"
+            }
+            ]
+        }
+      ```
 
 ## 고민 포인트
 - OOP 설계 시, 해당 도메인 로직이 추가되면, 로직이 복잡해질 것이 예상되어, 상상해서 구현하기보다는 요구사항에 좀 더 집중했습니다. 
