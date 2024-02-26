@@ -44,6 +44,7 @@ public class TestDataGenerator {
         this.producer = new EventProducer();
         this.bank = new Bank();
         this.rMaker = new RandomMaker();
+        this.random = new Random();
     }
 
     // for test code
