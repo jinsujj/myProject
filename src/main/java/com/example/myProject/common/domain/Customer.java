@@ -52,7 +52,6 @@ public class Customer {
             System.out.println("Customer " + customerId + " withdrew " + amount + " won");
             return true;
         }
-            
 
         return false;
     }

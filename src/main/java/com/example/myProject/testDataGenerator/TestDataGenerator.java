@@ -46,20 +46,20 @@ public class TestDataGenerator {
         this.rMaker = new RandomMaker();
     }
 
-    // for test code 
-    void setExecutorService(ExecutorService executorService) {
+    // for test code
+    protected void setExecutorService(ExecutorService executorService) {
         this.executorService = executorService;
     }
 
-    void setSessionManager(SessionManager sessionManager) {
+    protected void setSessionManager(SessionManager sessionManager) {
         this.sessionManager = sessionManager;
     }
 
-    void setEventProducer(EventProducer eventProducer) {
+    protected void setEventProducer(EventProducer eventProducer) {
         this.producer = eventProducer;
     }
 
-    void setBank(Bank bank) {
+    protected void setBank(Bank bank) {
         this.bank = bank;
     }
 
@@ -70,8 +70,9 @@ public class TestDataGenerator {
             executorService.submit(() -> {
                 while (!Thread.currentThread().isInterrupted()) {
                     try {
-                        long customerId = 1 + random.nextInt(customerCount);
-                        SimulateSingleCustomer(customerId, producer);
+                        var customerId = 1 + random.nextInt(customerCount);
+                        var randomAction = actions[random.nextInt(actions.length)];
+                        simulateSingleCustomer(customerId, randomAction, producer);
                         // random (0 ~ 2) sec delay
                         Thread.sleep((long) (Math.random() * intervalDelay));
                     } catch (Exception e) {
@@ -84,20 +85,18 @@ public class TestDataGenerator {
     }
 
     // 단일 고객 거래 시뮬레이션 
-    private void SimulateSingleCustomer(long customerId, EventProducer producer) throws JsonProcessingException {   
+    protected void simulateSingleCustomer(long customerId, FinancialAction action, EventProducer producer) throws JsonProcessingException {   
         // 세션 체크         
         if (!sessionManager.startSession(customerId))
             return; 
 
         try {
             Optional<Customer> findCustomer = bank.findCustomerById(customerId);
-            
+
             if (findCustomer.isPresent()) {
-                FinancialAction randomAction = actions[random.nextInt(actions.length)];
                 Customer customer = findCustomer.get();
                 sessionStartEvent(customer, producer);
-                processFinancialAction(customer, randomAction, producer);
-                
+                processFinancialAction(customer, action, producer);
             } else {
                 sessionStartEvent(customerId, producer);
                 processNewMemberAction(customerId, producer);                
@@ -108,7 +107,7 @@ public class TestDataGenerator {
     }
 
     // 고객 거래(입금,출금,이체) 처리
-    private void processFinancialAction(Customer customer, FinancialAction action, EventProducer producer) throws JsonProcessingException {
+    protected void processFinancialAction(Customer customer, FinancialAction action, EventProducer producer) throws JsonProcessingException {
         switch (action) {
             case DEPOSIT:
                 long depositAmount = rMaker.generateAmount();
@@ -127,8 +126,8 @@ public class TestDataGenerator {
 
             case WITHDRAWAL:
                 long withdrawAmount = rMaker.generateAmount();
-                if(customer.withdraw(withdrawAmount));
-                    withdrawEvent(customer, withdrawAmount, producer);
+                if(customer.withdraw(withdrawAmount))
+                    withdrawEvent(customer, withdrawAmount, producer);  
                 break;
 
             default:
@@ -137,7 +136,7 @@ public class TestDataGenerator {
     }
 
     // 고객 가입 & 계좌 개설
-    private void processNewMemberAction(long customerId, EventProducer producer) throws JsonProcessingException {
+    protected void processNewMemberAction(long customerId, EventProducer producer) throws JsonProcessingException {
         // customer signup
         Customer newCustomer = new Customer(customerId, rMaker.generateName(), 
                                             rMaker.generateBirth(), 

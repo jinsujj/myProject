@@ -13,6 +13,7 @@ public class Account {
     private long maxTransferAmount;
 
     public Account() {
+        this.transactions = new ArrayList<>();
     }
     
     public Account(long customerId, String accountNumber) {

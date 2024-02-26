@@ -18,17 +18,22 @@ import java.util.concurrent.Executors;
 public class EventConsumer {
     private final String financialEventsTopic = "FinancialEvents";
     private final int consumerCount;
-    private Properties props = new Properties();
+    private ExecutorService executor;
     private Bank bank;
+    private Properties props = new Properties();
 
     public EventConsumer(int consumerCount, Bank bank) {
         this.bank = bank;
         this.consumerCount = consumerCount;
+        this.executor = Executors.newFixedThreadPool(consumerCount);
+    }
+
+    // for test code
+    protected void setExecutorService(ExecutorService executor) {
+        this.executor = executor;
     }
 
     public void consume() throws InterruptedException {
-        ExecutorService executor = Executors.newFixedThreadPool(consumerCount);                 
-
         String groupId = "group_" + financialEventsTopic;
         int count = consumerCount;
 
