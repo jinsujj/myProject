@@ -37,7 +37,7 @@ public class SignUpProcessorTest {
 
         // then
         customer = bank.findCustomerByNumber(customerNumber).get();
-        assertTrue(isCustomerExist.isEmpty());
+        assertTrue(isCustomerExist.equals(Optional.empty()));
         assertTrue(customer.getCustomerNumber().equals(customerNumber));
         assertTrue(customer.getSessionCount() == 1);
     }

@@ -22,29 +22,26 @@ import com.example.myProject.testDataGenerator.util.SessionManager;
 import com.fasterxml.jackson.core.JsonProcessingException;
 
 public class TestDataGenerator {
-    private FinancialAction[] actions = { FinancialAction.DEPOSIT, FinancialAction.TRANSFER, FinancialAction.WITHDRAWAL };
+    private final FinancialAction[] actions = { FinancialAction.DEPOSIT, FinancialAction.TRANSFER,FinancialAction.WITHDRAWAL };
     private final int customerCount;
     private final int simultaneousCustomer;
     private final int intervalDelay;
-
+    private DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
     private ExecutorService executorService;
     private SessionManager sessionManager;
-    private EventProducer producer;
-    private Bank bank;
-    private DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
     private RandomMaker rMaker;
     private Random random;
+    private Bank bank;
 
-    public TestDataGenerator(int customerCount, int simultaneousCustomer ,int intervalDelay) {
+    public TestDataGenerator(int customerCount, int simultaneousCustomer, int intervalDelay) {
         this.customerCount = customerCount;
-        this.simultaneousCustomer = simultaneousCustomer;     
+        this.simultaneousCustomer = simultaneousCustomer;
         this.intervalDelay = intervalDelay;
         this.executorService = Executors.newFixedThreadPool(simultaneousCustomer);
         this.sessionManager = new SessionManager();
-        this.producer = new EventProducer();
-        this.bank = new Bank();
         this.rMaker = new RandomMaker();
         this.random = new Random();
+        this.bank = new Bank();
     }
 
     // for test code
@@ -56,18 +53,14 @@ public class TestDataGenerator {
         this.sessionManager = sessionManager;
     }
 
-    protected void setEventProducer(EventProducer eventProducer) {
-        this.producer = eventProducer;
-    }
-
     protected void setBank(Bank bank) {
         this.bank = bank;
     }
 
-    
-    // 고객 간 동시 거래 시뮬레이션 (거래 간 랜덤 시간 간격으로 실행)    
-    public void simulateCustomerBehavior(){
+    // 고객 간 동시 거래 시뮬레이션 (거래 간 랜덤 시간 간격으로 실행)
+    public void simulateCustomerBehavior() {
         for (int i = 0; i < simultaneousCustomer; i++) {
+            EventProducer producer = new EventProducer();
             executorService.submit(() -> {
                 while (!Thread.currentThread().isInterrupted()) {
                     try {
@@ -80,16 +73,18 @@ public class TestDataGenerator {
                         System.out.println("Error: " + e.getMessage());
                         executorService.shutdown();
                         break;
-                    }}}
-            );
+                    }
+                }
+            });
         }
     }
 
-    // 단일 고객 거래 시뮬레이션 
-    protected void simulateSingleCustomer(long customerId, FinancialAction action, EventProducer producer) throws JsonProcessingException {   
-        // 세션 체크         
+    // 단일 고객 거래 시뮬레이션
+    protected void simulateSingleCustomer(long customerId, FinancialAction action, EventProducer producer)
+            throws JsonProcessingException {
+        // 세션 체크
         if (!sessionManager.startSession(customerId))
-            return; 
+            return;
 
         try {
             Optional<Customer> findCustomer = bank.findCustomerById(customerId);
@@ -100,48 +95,47 @@ public class TestDataGenerator {
                 processFinancialAction(customer, action, producer);
             } else {
                 sessionStartEvent(customerId, producer);
-                processNewMemberAction(customerId, producer);                
+                processNewMemberAction(customerId, producer);
             }
         } finally {
-            sessionManager.endSession(customerId); 
+            sessionManager.endSession(customerId);
         }
     }
 
     // 고객 거래(입금,출금,이체) 처리
-    protected void processFinancialAction(Customer customer, FinancialAction action, EventProducer producer) throws JsonProcessingException {
+    protected void processFinancialAction(Customer customer, FinancialAction action, EventProducer producer)
+            throws JsonProcessingException {
         switch (action) {
             case DEPOSIT:
                 long depositAmount = rMaker.generateAmount();
-                customer.deposit(depositAmount);                
+                customer.deposit(depositAmount);
                 depositEvent(customer, depositAmount, producer);
                 break;
 
             case TRANSFER:
-                String recevingBank = rMaker.generateBankName();
-                String recevingAccount = rMaker.generateAccountNumber();
-                String recevingHolder = rMaker.generateName();
-                long transferAmount = rMaker.generateAmount();
+                var recevingBank = rMaker.generateBankName();
+                var recevingAccount = rMaker.generateAccountNumber();
+                var recevingHolder = rMaker.generateName();
+                var transferAmount = rMaker.generateAmount();
                 if (customer.transfer(recevingBank, recevingAccount, recevingHolder, transferAmount))
                     transferEvent(customer, recevingBank, recevingAccount, recevingHolder, transferAmount, producer);
                 break;
 
             case WITHDRAWAL:
                 long withdrawAmount = rMaker.generateAmount();
-                if(customer.withdraw(withdrawAmount))
-                    withdrawEvent(customer, withdrawAmount, producer);  
+                if (customer.withdraw(withdrawAmount))
+                    withdrawEvent(customer, withdrawAmount, producer);
                 break;
 
             default:
-                break;  
+                break;
         }
     }
 
     // 고객 가입 & 계좌 개설
     protected void processNewMemberAction(long customerId, EventProducer producer) throws JsonProcessingException {
         // customer signup
-        Customer newCustomer = new Customer(customerId, rMaker.generateName(), 
-                                            rMaker.generateBirth(), 
-                                            LocalDateTime.now().format(formatter));
+        var newCustomer = new Customer(customerId, rMaker.generateName(),rMaker.generateBirth(),LocalDateTime.now().format(formatter));
         bank.signupCustomer(newCustomer);
         signUpEvent(newCustomer, producer);
 
@@ -151,11 +145,10 @@ public class TestDataGenerator {
     }
 
 
-    
     // Kafka Producer에 이벤트 전송
     private void sessionStartEvent(long customerId, EventProducer producer) throws JsonProcessingException {
         producer.send(String.valueOf(customerId),
-                 new SessionStartLog("", LocalDateTime.now()).toJson());
+                new SessionStartLog("", LocalDateTime.now()).toJson());
     }
 
     private void sessionStartEvent(Customer customer, EventProducer producer) throws JsonProcessingException {
@@ -166,43 +159,45 @@ public class TestDataGenerator {
     private void signUpEvent(Customer customer, EventProducer producer) throws JsonProcessingException {
         producer.send(String.valueOf(customer.getCustomerId()),
                 new SignUpLog(customer.getCustomerNumber(),
-                                customer.getName(),
-                                customer.getDateOfBirth(),
-                                customer.getJoinDateTime()).toJson());
+                        customer.getName(),
+                        customer.getDateOfBirth(),
+                        customer.getJoinDateTime()).toJson());
     }
 
     private void openAccountEvent(Customer customer, EventProducer producer) throws JsonProcessingException {
         producer.send(String.valueOf(customer.getCustomerId()),
                 new AccountOpeningLog(customer.getCustomerNumber(),
-                                        customer.getAccount().getAccountNumber(),
-                                        LocalDateTime.now()).toJson());
+                        customer.getAccount().getAccountNumber(),
+                        LocalDateTime.now()).toJson());
     }
 
-    private void depositEvent(Customer customer, long depositAmout, EventProducer producer) throws JsonProcessingException {
+    public void depositEvent(Customer customer, long depositAmout, EventProducer producer)
+            throws JsonProcessingException {
         producer.send(String.valueOf(customer.getCustomerId()),
-                new DepositLog(customer.getCustomerNumber(), 
-                                customer.getAccount().getAccountNumber(), 
-                                depositAmout, 
-                                LocalDateTime.now()).toJson());
+                new DepositLog(customer.getCustomerNumber(),
+                        customer.getAccount().getAccountNumber(),
+                        depositAmout,
+                        LocalDateTime.now()).toJson());
     }
-    
-    private void transferEvent(Customer customer, String receivingBank, String receivingAccountNumber,
-                String receivingAccountHolder, long transferAmount, EventProducer producer) throws JsonProcessingException {
+
+    public void transferEvent(Customer customer, String receivingBank, String receivingAccountNumber,
+            String receivingAccountHolder, long transferAmount, EventProducer producer) throws JsonProcessingException {
         producer.send(String.valueOf(customer.getCustomerId()),
                 new TransferLog(customer.getCustomerNumber(),
-                                customer.getAccount().getAccountNumber(),
-                                receivingBank,
-                                receivingAccountNumber, 
-                                receivingAccountHolder, 
-                                transferAmount, 
-                                LocalDateTime.now()).toJson());
+                        customer.getAccount().getAccountNumber(),
+                        receivingBank,
+                        receivingAccountNumber,
+                        receivingAccountHolder,
+                        transferAmount,
+                        LocalDateTime.now()).toJson());
     }
 
-    private void withdrawEvent(Customer customer, long withdrawAmount, EventProducer producer) throws JsonProcessingException {
+    public void withdrawEvent(Customer customer, long withdrawAmount, EventProducer producer)
+            throws JsonProcessingException {
         producer.send(String.valueOf(customer.getCustomerId()),
-                new WithdrawLog(customer.getCustomerNumber(), 
-                                customer.getAccount().getAccountNumber(), 
-                                withdrawAmount, 
-                                LocalDateTime.now()).toJson());
+                new WithdrawLog(customer.getCustomerNumber(),
+                        customer.getAccount().getAccountNumber(),
+                        withdrawAmount,
+                        LocalDateTime.now()).toJson());
     }
 }

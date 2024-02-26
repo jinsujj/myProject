@@ -45,7 +45,6 @@ public class TestDataGeneratorTest {
         testDataGenerator.setExecutorService(executorService);
         testDataGenerator.setSessionManager(sessionManager);
         testDataGenerator.setBank(bank);
-        testDataGenerator.setEventProducer(producer);
     }
 
 
