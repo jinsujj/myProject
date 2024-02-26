@@ -105,6 +105,44 @@ ETL 은 데이터의 누락, 중복이 모두 중요하기에, EOS(Exactly Once 
       - customers: 현재 페이지에 해당하는 고객 정보 리스트
       - currentPage: 현재 페이지 번호
       - pageSize: 요청에 따라 반환된 페이지 크기(고객수)
+    - 예시
+        ```json
+        {
+            totalCustomers: "13115",
+            pageSize: 500,
+            customers: [
+                {
+                    customerNumber: "C1",
+                    name: "최지영",
+                    birthDate: "1984-09-02",
+                    joinDateTime: "2024-02-27 01:59:53",
+                    sessionCount: 21
+                },
+                {
+                    customerNumber: "C32770",
+                    name: "최지수",
+                    birthDate: "1983-09-09",
+                    joinDateTime: "2024-02-27 01:59:00",
+                    sessionCount: 32
+                },
+                {
+                    customerNumber: "C32771",
+                    name: "김승석",
+                    birthDate: "1990-07-22",
+                    joinDateTime: "2024-02-27 02:00:38",
+                    sessionCount: 12
+                },
+                {
+                    customerNumber: "C3",
+                    name: "김영희",
+                    birthDate: "1959-09-20",
+                    joinDateTime: "2024-02-27 02:01:27",
+                    sessionCount: 22
+                },
+                ...
+            ]
+            
+        ```
 
 - 특정 고객 조회 API
   - GET /customer/:customerNumber

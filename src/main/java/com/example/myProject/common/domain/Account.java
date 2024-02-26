@@ -53,13 +53,26 @@ public class Account {
         }
 
         this.balance -= amount;
-        addTransaction(FinancialAction.TRANSFER, amount, eventTime);
+        addTransaction(FinancialAction.TRANSFER, amount,receivingBank, receivingAccountNumber, receivingAccountHolder, eventTime);
         return true;
     }
 
     // 거래 추가
     public void addTransaction(FinancialAction type, long amount, String eventTime) {
         transactions.add(new Transaction(type, amount, eventTime));
+        checkAmountPerType(type, amount);
+
+        // 최근 3건의 거래만 유지
+        if (transactions.size() > 3) {
+            transactions.remove(0);
+        }
+    }
+    
+    public void addTransaction(FinancialAction type, long amount, String receivingBank, String receivingAccountNumber, String receivingAccountHolder, String eventTime) {
+        if (type != FinancialAction.TRANSFER) 
+            return ;
+
+        transactions.add(new Transaction(type, amount, eventTime, receivingBank, receivingAccountNumber, receivingAccountHolder));
         checkAmountPerType(type, amount);
 
         // 최근 3건의 거래만 유지
