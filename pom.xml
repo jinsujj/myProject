@@ -85,16 +85,5 @@
       <version>3.6.0</version>
       <scope>test</scope>
     </dependency>
-    <!-- sl4j -->
-    <dependency>
-      <groupId>org.slf4j</groupId>
-      <artifactId>slf4j-api</artifactId>
-      <version>1.7.30</version>      <!-- 버전은 프로젝트 요구사항에 맞게 조정 -->
-    </dependency>
-    <dependency>
-      <groupId>org.slf4j</groupId>
-      <artifactId>slf4j-simple</artifactId>
-      <version>1.7.30</version>      <!-- 이것은 로깅 구현체 중 하나입니다 -->
-    </dependency>
   </dependencies>
 </project>
