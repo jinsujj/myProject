@@ -2,18 +2,15 @@ package com.example.myproject.common.financialog;
 
 import com.example.myproject.common.domain.FinancialAction;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 
 
-public class SignUpLog {
+public class SignUpLog extends BaseLog {
     private String customerNumber;
     private String customerName;
     private String dateOfBirth;
     private String registrationTime;
     private String action;
-
-    private transient ObjectMapper mapper = new ObjectMapper();
 
     public SignUpLog() {
     }

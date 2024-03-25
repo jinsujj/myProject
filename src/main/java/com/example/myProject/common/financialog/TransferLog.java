@@ -1,13 +1,11 @@
 package com.example.myproject.common.financialog;
 
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 
 import com.example.myproject.common.domain.FinancialAction;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 
-public class TransferLog {
+public class TransferLog extends BaseLog{
     private String customerNumber;
     private String remittanceAccountNumber;
     private String receivingBank;
@@ -16,9 +14,6 @@ public class TransferLog {
     private long transferAmount;
     private String transferTime;
     private String action;
-
-    private transient ObjectMapper mapper = new ObjectMapper();
-    private transient DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
     public TransferLog() {
     }

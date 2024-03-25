@@ -5,6 +5,7 @@ import java.util.Map;
 
 import com.example.myproject.common.domain.FinancialAction;
 import com.example.myproject.profiler.processor.DepositProcessor;
+import com.example.myproject.profiler.processor.MessageProcessor;
 import com.example.myproject.profiler.processor.OpenAccountProcessor;
 import com.example.myproject.profiler.processor.SessionStartProcessor;
 import com.example.myproject.profiler.processor.SignUpProcessor;

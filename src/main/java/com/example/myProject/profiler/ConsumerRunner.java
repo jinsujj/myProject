@@ -18,6 +18,7 @@ import org.apache.kafka.common.serialization.StringDeserializer;
 
 import com.example.myproject.common.domain.Bank;
 import com.example.myproject.common.domain.FinancialAction;
+import com.example.myproject.profiler.processor.MessageProcessor;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 
