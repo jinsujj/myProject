@@ -1,7 +1,6 @@
 package com.example.myproject.customerprofiler;
 
 import java.util.Properties;
-import java.util.concurrent.atomic.AtomicInteger;
 import java.util.Arrays;
 import java.util.Map;
 import java.io.BufferedWriter;
@@ -23,7 +22,10 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 
 public class ConsumerRunner implements Runnable{
-    private static final AtomicInteger MAX_RETRY = new AtomicInteger(3); // 최대 재시도 횟수
+    private static final String BOOTSTRAP_SERVERS = "localhost:9092,localhost:9093,localhost:9094";
+    private static final String ISOLATION_LEVEL = "read_committed";
+
+    private static final int MAX_RETRY = 3; // 최대 재시도 횟수
     private static final long RETRY_INTERVAL_MS = 1000; // 재시도 간격 (밀리초)
     private static final int CONSUME_INTERVAL_MS = 100; // 컨슈머 폴링 주기 (밀리초)
 
@@ -47,12 +49,12 @@ public class ConsumerRunner implements Runnable{
     @Override
     public void run() {
         // Consumer 설정
-        this.props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, "localhost:9092,localhost:9093,localhost:9094");
+        this.props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, BOOTSTRAP_SERVERS);
         this.props.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class.getName());
         this.props.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class.getName());
 
         // EOS(Exactly Once Semantics) 설정
-        this.props.put(ConsumerConfig.ISOLATION_LEVEL_CONFIG, "read_committed");
+        this.props.put(ConsumerConfig.ISOLATION_LEVEL_CONFIG, ISOLATION_LEVEL);
         this.props.put(ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG, "false");   
         this.props.put(ConsumerConfig.GROUP_ID_CONFIG,groupId);
         consumer = new KafkaConsumer<>(props);
@@ -82,10 +84,10 @@ public class ConsumerRunner implements Runnable{
 
     
     // 비동기 커밋 및 재시도 로직
-    protected void asyncCommit(KafkaConsumer<String, String> consumer, AtomicInteger remainingRetries) {
+    protected void asyncCommit(KafkaConsumer<String, String> consumer, int remainingRetries) {
         consumer.commitAsync((offsets, exception) -> {
             if (exception != null) {
-                if (remainingRetries.get() > 0) {
+                if (remainingRetries > 0) {
                     retryCommit(consumer, remainingRetries);
                 } else {
                     handleCommitFailure(offsets, exception);
@@ -95,7 +97,7 @@ public class ConsumerRunner implements Runnable{
     }
 
     // 커밋 재시도 로직
-    protected void retryCommit(KafkaConsumer<String, String> consumer, AtomicInteger remainingRetries) {
+    protected void retryCommit(KafkaConsumer<String, String> consumer, int remainingRetries) {
         System.out.println(consumer + "Retrying commit...: " + remainingRetries);
         try {
             Thread.sleep(RETRY_INTERVAL_MS);
@@ -103,7 +105,7 @@ public class ConsumerRunner implements Runnable{
             Thread.currentThread().interrupt();
             return;
         }
-        remainingRetries.decrementAndGet();
+        remainingRetries--;
         asyncCommit(consumer, remainingRetries);
     }
 
