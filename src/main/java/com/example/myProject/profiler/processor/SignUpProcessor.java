@@ -4,7 +4,7 @@ import org.apache.kafka.clients.consumer.ConsumerRecord;
 
 import com.example.myproject.common.domain.Bank;
 import com.example.myproject.common.domain.Customer;
-import com.example.myproject.common.financialog.SignUpLog;
+import com.example.myproject.common.response.log.SignUpLog;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 

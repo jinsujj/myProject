@@ -6,7 +6,7 @@ import org.junit.jupiter.api.Test;
 
 import com.example.myproject.common.domain.Bank;
 import com.example.myproject.common.domain.Customer;
-import com.example.myproject.common.financialog.TransferLog;
+import com.example.myproject.common.response.log.TransferLog;
 import com.fasterxml.jackson.core.JsonProcessingException;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;

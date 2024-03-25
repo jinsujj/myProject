@@ -8,7 +8,7 @@ import org.junit.jupiter.api.Test;
 
 import com.example.myproject.common.domain.Bank;
 import com.example.myproject.common.domain.Customer;
-import com.example.myproject.common.financialog.AccountOpeningLog;
+import com.example.myproject.common.response.log.AccountOpeningLog;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import java.time.LocalDateTime;
 

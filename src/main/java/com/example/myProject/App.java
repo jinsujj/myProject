@@ -6,8 +6,8 @@ import com.example.myproject.profiler.EventConsumer;
 import com.example.myproject.common.domain.Account;
 import com.example.myproject.common.domain.Bank;
 import com.example.myproject.common.domain.Customer;
-import com.example.myproject.common.responsedto.AccountInfo;
-import com.example.myproject.common.responsedto.CustomerInfo;
+import com.example.myproject.common.response.dto.AccountInfo;
+import com.example.myproject.common.response.dto.CustomerInfo;
 import com.example.myproject.generator.TestDataGenerator;
 
 import static spark.Spark.*;

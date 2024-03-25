@@ -6,7 +6,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 
-import com.example.myproject.common.responsedto.CustomerInfo;
+import com.example.myproject.common.response.dto.CustomerInfo;
 
 
 public class Bank {
