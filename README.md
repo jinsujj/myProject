@@ -73,7 +73,8 @@ mvn exec:java -Dexec.args="profiler"
                                 ├── SignUpProcessor.java
                                 ├── TransferProcessor.java
                                 └── WithdrawalProcessor.java
-``
+```
+
 제너레이터(프로듀서) 에서 '전체 고객 수'와, '동시 실행 인원 수', '랜덤 실행 간격' 를 조정 해 실행할 수 있도록 파라미터로 설정해두었으며, 고객 별 동시 세션 접속을 못하도록 구현했습니다. \
 6가지 금융 로그는 각각의 financialLog 객체를 만들어, json 포맷으로 변환하기 쉽도록 스키마를 구현했습니다. 
 
