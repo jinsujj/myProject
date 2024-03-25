@@ -6,14 +6,19 @@ import com.example.myproject.common.domain.FinancialAction;
 import com.fasterxml.jackson.core.JsonProcessingException;
 
 public class AccountOpeningLog extends BaseLog {
-    private String customerNumber;
-    private String accountNumber;
-    private String accountOpeningTime;
-    private String action;
+    private final String customerNumber;
+    private final String accountNumber;
+    private final String accountOpeningTime;
+    private final String action;
 
-    public AccountOpeningLog() {
+    public AccountOpeningLog(){
+        this.customerNumber = "";
+        this.accountNumber = "";
+        this.accountOpeningTime = "";
+        this.action = "";
+
     }
-
+    
     public AccountOpeningLog(String customerNumber, String accountNumber, LocalDateTime accountOpeningTime) {
         this.customerNumber = customerNumber;
         this.accountNumber = accountNumber;

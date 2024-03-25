@@ -6,13 +6,18 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 
 
 public class SignUpLog extends BaseLog {
-    private String customerNumber;
-    private String customerName;
-    private String dateOfBirth;
-    private String registrationTime;
-    private String action;
+    private final String customerNumber;
+    private final String customerName;
+    private final String dateOfBirth;
+    private final String registrationTime;
+    private final String action;
 
-    public SignUpLog() {
+    public SignUpLog(){
+        this.customerNumber = "";
+        this.customerName = "";
+        this.dateOfBirth = "";
+        this.registrationTime = "";
+        this.action = "";
     }
 
     public SignUpLog(String customerNumber, String customerName, String dateOfBirth, String registrationTime) {

@@ -1,23 +1,23 @@
 package com.example.myproject.common.response.log;
 
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 
 import com.example.myproject.common.domain.FinancialAction;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 
-public class WithdrawLog {
-    private String customerNumber;
-    private String withdrawAccountNumber;
-    private long withdrawAmount;
-    private String withdrawTime;
-    private String action;
+public class WithdrawLog extends BaseLog {
+    private final String customerNumber;
+    private final String withdrawAccountNumber;
+    private final long withdrawAmount;
+    private final String withdrawTime;
+    private final String action;
 
-    private transient ObjectMapper mapper = new ObjectMapper();
-    private transient DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-
-    public WithdrawLog() {
+    public WithdrawLog(){
+        this.customerNumber = "";
+        this.withdrawAccountNumber = "";
+        this.withdrawAmount = 0;
+        this.withdrawTime = "";
+        this.action = "";
     }
 
     public WithdrawLog(String customerNumber, String withdrawAccountNumber, long withdrawAmount, LocalDateTime withdrawTime) {

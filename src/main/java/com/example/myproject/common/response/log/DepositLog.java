@@ -6,15 +6,12 @@ import com.example.myproject.common.domain.FinancialAction;
 import com.fasterxml.jackson.core.JsonProcessingException;
 
 public class DepositLog extends BaseLog {
-    private String customerNumber;
-    private String depositAccountNumber;
-    private long depositAmount;
-    private String depositTime;
-    private String action;
-
-    public DepositLog() {
-    }
-
+    private final String customerNumber;
+    private final String depositAccountNumber;
+    private final long depositAmount;
+    private final String depositTime;
+    private final String action;
+    
     public DepositLog(String customerNumber, String depositAccountNumber, long depositAmount, LocalDateTime depositTime) {
         this.customerNumber = customerNumber;
         this.depositAccountNumber = depositAccountNumber;

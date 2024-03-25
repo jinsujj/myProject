@@ -6,11 +6,14 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import java.time.LocalDateTime;
 
 public class SessionStartLog extends BaseLog {
-    private String customerNumber;
-    private String sessionTime;
-    private String action;
+    private final String customerNumber;
+    private final String sessionTime;
+    private final String action;
 
-    public SessionStartLog() {
+    public SessionStartLog(){
+        this.customerNumber = "";
+        this.sessionTime = "";
+        this.action = "";
     }
 
     public SessionStartLog(String customerNumber, LocalDateTime sesstionTime) {

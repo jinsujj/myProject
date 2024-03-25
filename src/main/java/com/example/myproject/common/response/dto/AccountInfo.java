@@ -1,5 +1,6 @@
 package com.example.myproject.common.response.dto;
 
+import java.util.Collections;
 import java.util.List;
 
 import com.example.myproject.common.domain.Account;
@@ -7,15 +8,15 @@ import com.example.myproject.common.domain.Transaction;
 import com.fasterxml.jackson.core.JsonProcessingException;
 
 public class AccountInfo extends BaseInfo {
-    private String accountNumber;
-    private long balance;
-    private long maxDepositAmount;
-    private long maxwithdrawalAmount;
-    private long maxTransferAmount;
-    private long minDepositAmount;
-    private long minWithdrawalAmount;
-    private long minTransferAmount;
-    private List<Transaction> transactions;
+    private final String accountNumber;
+    private final long balance;
+    private final long maxDepositAmount;
+    private final long maxwithdrawalAmount;
+    private final long maxTransferAmount;
+    private final long minDepositAmount;
+    private final long minWithdrawalAmount;
+    private final long minTransferAmount;
+    private final List<Transaction> transactions;
 
     public AccountInfo(Account account) {
         this.accountNumber = account.getAccountNumber();
@@ -23,10 +24,10 @@ public class AccountInfo extends BaseInfo {
         this.maxDepositAmount = account.getMaxDepositAmount();
         this.maxwithdrawalAmount = account.getMaxwithdrawalAmount();
         this.maxTransferAmount = account.getMaxTransferAmount();
-        this.transactions = account.getTransactions();
         this.minDepositAmount = account.getMinDepositAmount();
         this.minWithdrawalAmount = account.getMinWithdrawalAmount();
         this.minTransferAmount = account.getMinTransferAmount();
+        this.transactions = account.getTransactions();
     }
 
     public String getAccountNumber() {
@@ -62,7 +63,7 @@ public class AccountInfo extends BaseInfo {
     }
 
     public List<Transaction> getTransactions() {
-        return transactions;
+        return Collections.unmodifiableList(transactions);
     }
 
     public String toJson() throws JsonProcessingException {

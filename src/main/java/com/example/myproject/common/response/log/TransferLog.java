@@ -5,19 +5,27 @@ import java.time.LocalDateTime;
 import com.example.myproject.common.domain.FinancialAction;
 import com.fasterxml.jackson.core.JsonProcessingException;
 
-public class TransferLog extends BaseLog{
-    private String customerNumber;
-    private String remittanceAccountNumber;
-    private String receivingBank;
-    private String receivingAccountNumber;
-    private String receivingAccountHolder;
-    private long transferAmount;
-    private String transferTime;
-    private String action;
+public class TransferLog extends BaseLog {
+    private final String customerNumber;
+    private final String remittanceAccountNumber;
+    private final String receivingBank;
+    private final String receivingAccountNumber;
+    private final String receivingAccountHolder;
+    private final long transferAmount;
+    private final String transferTime;
+    private final String action;
 
-    public TransferLog() {
+    public TransferLog(){
+        this.customerNumber = "";
+        this.remittanceAccountNumber = "";
+        this.receivingBank = "";
+        this.receivingAccountNumber = "";
+        this.receivingAccountHolder = "";
+        this.transferAmount = 0;
+        this.transferTime = "";
+        this.action = "";
     }
-    
+
     public TransferLog(String customerNumber, String remittanceAccountNumber, String receivingBank,
             String receivingAccountNumber, String receivingAccountHolder, long transferAmount,
             LocalDateTime transferTime) {

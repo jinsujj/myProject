@@ -4,11 +4,11 @@ import com.example.myproject.common.domain.Customer;
 import com.fasterxml.jackson.core.JsonProcessingException;
 
 public class CustomerInfo extends BaseInfo {
-    private String customerNumber;
-    private String name;
-    private String birthDate;
-    private String joinDateTime;
-    private long sessionCount;
+    private final String customerNumber;
+    private final String name;
+    private final String birthDate;
+    private final String joinDateTime;
+    private final long sessionCount;
 
     public CustomerInfo(Customer customer ) {
         this.customerNumber = customer.getCustomerNumber();
