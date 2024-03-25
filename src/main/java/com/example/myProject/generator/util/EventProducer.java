@@ -11,9 +11,9 @@ import org.apache.kafka.common.Uuid;
 
 public class EventProducer {
     private static final String BOOTSTRAP_SERVERS = "localhost:9092,localhost:9093,localhost:9094";
+    private static final String financialEventsTopic = "FinancialEvents";
     private Producer<String, String> producer;
     private String transactionIdPrefix = "trans-"; 
-    private final String financialEventsTopic = "FinancialEvents";
     private Properties props = new Properties();
 
     
@@ -39,7 +39,7 @@ public class EventProducer {
         producer.initTransactions();
     }
 
-    // key는 고객 ID, value는 로그 내역
+    // key : customerId , value : FinalcialLog
     public void send(String key, String value) {
         try {
             producer.beginTransaction();
