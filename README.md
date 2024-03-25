@@ -18,58 +18,62 @@ http://localhost:9092, http://localhost:9093, http://localhost:9094
 mvn exec:java -Dexec.args="generator"
 
 ##  Profiler 파일 실행 
-mvn exec:java -Dexec.args="profiler"   ..(실행되는데 조금 대기시간 필요)
+mvn exec:java -Dexec.args="profiler"
 
 
 
 ##  프로젝트 구조 
 ```
-├── docker-compose-infra.yml    --  Kafka 브로커 및 kafka-ui 설정 파일 
-├── pom.xml
+.
+├── README.md
+├── docker-compose-infra.yml                              --  Kafka 브로커 및 kafka-ui 설정 파일 
+├── pom.xml                                            
 └── src
     └── main
         └── java
             └── com
                 └── example
-                    └── myProject
-                        ├── App.java                               --- Generator, Profiler 구동 객체
+                    └── myproject
+                        ├── App.java
                         ├── common
-                        │   ├── domain                             --- 도메인 정의
+                        │   ├── domain                    --  도메인 객체
                         │   │   ├── Account.java
                         │   │   ├── Bank.java
                         │   │   ├── Customer.java
                         │   │   ├── FinancialAction.java
                         │   │   └── Transaction.java
-                        │   ├── financialLog                       --- 카프카 이벤트 스키마 객체
-                        │   │   └── v1
-                        │   │       ├── AccountOpeningLog.java
-                        │   │       ├── DepositLog.java
-                        │   │       ├── SessionStartLog.java
-                        │   │       ├── SignUpLog.java
-                        │   │       ├── TransferLog.java
-                        │   │       └── WithdrawLog.java
-                        │   └── responseDto                        --- JavaSpark 에서 사용할 반환 DTO 객체
-                        │       ├── AccountInfo.java
-                        │       └── CustomerInfo.java
-                        ├── customerProfiler
-                        │   ├── EventConsumer.java                 --- 카프카 그룹 설정 및 관리 객체
-                        │   ├── ConsumerRunner.java                --- 컨슈머 비동기 처리 객체
-                        │   ├── MessageProcessor.java              --- 이벤트 처리 인터페이스
-                        │   ├── ProcessorFactory.java              --- 이벤트 처리 추상화 객체
-                        │   └── messageProcessorImpl               --- 이벤트 처리 구현부
-                        │       ├── DepositProcessor.java
-                        │       ├── OpenAccountProcessor.java
-                        │       ├── SessionStartProcessor.java
-                        │       ├── SignUpProcessor.java
-                        │       ├── TransferProcessor.java
-                        │       └── WithdrawalProcessor.java
-                        └── testDataGenerator
-                            ├── TestDataGenerator.java             --- 테스트 데이터 생성 객체
-                            └── util
-                                ├── EventProducer.java             --- 카프카 프로듀서 설정 객체
-                                ├── RandomMaker.java               --- 랜덤 데이터 생성 객체
-                                └── SessionManager.java            --- 동일 고객 세션 관리 객체
-```
+                        │   └── response
+                        │       ├── dto                   --- JavaSpark 에서 사용할 반환 DTO 객체
+                        │       │   ├── AccountInfo.java
+                        │       │   ├── BaseInfo.java
+                        │       │   └── CustomerInfo.java
+                        │       └── log                   --- Kafka 금융 로그 이벤트 스키마 객체
+                        │           ├── AccountOpeningLog.java
+                        │           ├── BaseLog.java
+                        │           ├── DepositLog.java
+                        │           ├── SessionStartLog.java
+                        │           ├── SignUpLog.java
+                        │           ├── TransferLog.java
+                        │           └── WithdrawLog.java
+                        ├── generator
+                        │   ├── TestDataGenerator.java
+                        │   └── util
+                        │       ├── EventProducer.java    --- 카프카 프로듀서 설정 객체
+                        │       ├── RandomMaker.java      --- 랜덤 데이터 생성 객체
+                        │       └── SessionManager.java   --- 동일 고객 세션 관리 객체
+                        └── profiler
+                            ├── EventConsumer.java        --- 카프카 그룹 설정 및 관리 객체
+                            ├── ConsumerRunner.java       --- 컨슈머 비동기 처리 객체
+                            ├── ProcessorFactory.java     --- 이벤트 처리 추상화 객체
+                            └── processor                 --- 이벤트 처리 구현부
+                                ├── BaseProcessor.java    
+                                ├── DepositProcessor.java
+                                ├── OpenAccountProcessor.java
+                                ├── SessionStartProcessor.java
+                                ├── SignUpProcessor.java
+                                ├── TransferProcessor.java
+                                └── WithdrawalProcessor.java
+``
 제너레이터(프로듀서) 에서 '전체 고객 수'와, '동시 실행 인원 수', '랜덤 실행 간격' 를 조정 해 실행할 수 있도록 파라미터로 설정해두었으며, 고객 별 동시 세션 접속을 못하도록 구현했습니다. \
 6가지 금융 로그는 각각의 financialLog 객체를 만들어, json 포맷으로 변환하기 쉽도록 스키마를 구현했습니다. 
 
@@ -227,9 +231,8 @@ ETL 은 데이터의 누락, 중복이 모두 중요하기에, EOS(Exactly Once 
 
 
 ## 개선 사항
-- h2 DB 를 사용하자
 - try catch 놓친 부분 확인
 - 테스트 코드에서 set 을 넣은 부분
 - 레이어드 아키텍처 
-
-### 패키지명 이슈
+- 패키지명 이슈
+- Immutable 하게 개선
