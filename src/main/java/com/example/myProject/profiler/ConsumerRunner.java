@@ -30,9 +30,11 @@ public class ConsumerRunner implements Runnable{
     private static final long RETRY_INTERVAL_MS = 1000; // 재시도 간격 (밀리초)
     private static final int CONSUME_INTERVAL_MS = 100; // 컨슈머 폴링 주기 (밀리초)
 
+    private static final ObjectMapper objectMapper = new ObjectMapper();
+    private ProcessorFactory processorFactory = new ProcessorFactory(); // 예시로 추가한 코드
     private KafkaConsumer<String, String> consumer;
-    private final String topic;
-    private final String groupId;
+    private String topic;
+    private String groupId;
     private Properties props;
     private Bank bank;
 
@@ -65,19 +67,22 @@ public class ConsumerRunner implements Runnable{
             while (true) {
                 ConsumerRecords<String, String> records = consumer.poll(Duration.ofMillis(CONSUME_INTERVAL_MS));
                 for (ConsumerRecord<String, String> record : records) {
-                    
-                    String actionValue = new ObjectMapper().readTree(record.value()).get("action").asText();
-                    FinancialAction action = FinancialAction.valueOf(actionValue.toUpperCase());
+                    try {
+                        String actionValue = objectMapper.readTree(record.value()).get("action").asText();
+                        FinancialAction action = FinancialAction.valueOf(actionValue.toUpperCase());
+                        BaseProcessor processor = processorFactory.getProcessor(action);
 
-                    BaseProcessor processor = new ProcessorFactory().getProcessor(action);
-                    if (processor != null) {
-                        processor.process(record,bank);
+                        if (processor != null) {
+                            processor.process(record, bank);
+                        }
+                    } catch (Exception e) {
+                        System.out.println("Failed to process record: " + record.key()+" : "+ record.value() + ". Error: " + e.getMessage());
                     }
                 }
                 asyncCommit(consumer, MAX_RETRY);
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            System.out.println("Failed to consume message: " + e.getMessage());
         } finally {
             consumer.close();
         }
