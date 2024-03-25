@@ -15,7 +15,7 @@ public class SignUpProcessor extends BaseProcessor{
 
     @Override
     public void process(ConsumerRecord<String, String> record, Bank bank) throws JsonProcessingException {
-        SignUpLog signUpLog = mapper.readValue(record.value(), SignUpLog.class);
+        SignUpLog signUpLog = this.mapper.readValue(record.value(), SignUpLog.class);
 
         customerName = signUpLog.getCustomerName();
         customerNumber = signUpLog.getCustomerNumber();
