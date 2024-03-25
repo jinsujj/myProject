@@ -1,4 +1,4 @@
-package com.example.myproject.datagenerator.util;
+package com.example.myproject.generator.util;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 

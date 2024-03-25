@@ -1,4 +1,4 @@
-package com.example.myproject.customerprofiler.processor;
+package com.example.myproject.profiler.processor;
 
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.junit.jupiter.api.BeforeEach;

@@ -1,4 +1,4 @@
-package com.example.myproject.customerprofiler;
+package com.example.myproject.profiler;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;

@@ -1,4 +1,4 @@
-package com.example.myproject.customerprofiler.processor;
+package com.example.myproject.profiler.processor;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 

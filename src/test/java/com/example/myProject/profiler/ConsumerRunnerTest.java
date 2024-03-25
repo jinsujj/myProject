@@ -1,4 +1,4 @@
-package com.example.myproject.customerprofiler;
+package com.example.myproject.profiler;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;

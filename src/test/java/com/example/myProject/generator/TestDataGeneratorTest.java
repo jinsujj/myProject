@@ -1,4 +1,4 @@
-package com.example.myproject.datagenerator;
+package com.example.myproject.generator;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
@@ -16,8 +16,8 @@ import com.example.myproject.common.domain.Account;
 import com.example.myproject.common.domain.Bank;
 import com.example.myproject.common.domain.Customer;
 import com.example.myproject.common.domain.FinancialAction;
-import com.example.myproject.datagenerator.util.EventProducer;
-import com.example.myproject.datagenerator.util.SessionManager;
+import com.example.myproject.generator.util.EventProducer;
+import com.example.myproject.generator.util.SessionManager;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import java.time.format.DateTimeFormatter;
 import java.time.LocalDateTime;
