@@ -8,17 +8,15 @@ import com.example.myproject.common.domain.Bank;
 import com.example.myproject.common.domain.Customer;
 import com.example.myproject.common.response.log.WithdrawLog;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 
-public class WithdrawalProcessor implements BaseProcessor {
-    private ObjectMapper mapper = new ObjectMapper();
+public class WithdrawalProcessor extends BaseProcessor {
     private String customerNumber;
     private long withdrawAmount;
     private String withdrawTime;
 
     @Override
     public void process(ConsumerRecord<String, String> record, Bank bank) throws JsonProcessingException {
-        WithdrawLog withdrawLog = mapper.readValue(record.value(), WithdrawLog.class);
+        WithdrawLog withdrawLog = this.mapper.readValue(record.value(), WithdrawLog.class);
 
         customerNumber = withdrawLog.getCustomerNumber();
         withdrawAmount = withdrawLog.getWithdrawAmount();
