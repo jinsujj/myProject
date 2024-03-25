@@ -19,6 +19,8 @@ import org.apache.kafka.common.serialization.StringDeserializer;
 import com.example.myproject.common.domain.Bank;
 import com.example.myproject.common.domain.FinancialAction;
 import com.example.myproject.profiler.processor.BaseProcessor;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 
@@ -68,15 +70,9 @@ public class ConsumerRunner implements Runnable{
                 ConsumerRecords<String, String> records = consumer.poll(Duration.ofMillis(CONSUME_INTERVAL_MS));
                 for (ConsumerRecord<String, String> record : records) {
                     try {
-                        String actionValue = objectMapper.readTree(record.value()).get("action").asText();
-                        FinancialAction action = FinancialAction.valueOf(actionValue.toUpperCase());
-                        BaseProcessor processor = processorFactory.getProcessor(action);
-
-                        if (processor != null) {
-                            processor.process(record, bank);
-                        }
+                        consumeRecord(record);
                     } catch (Exception e) {
-                        System.out.println("Failed to process record: " + record.key()+" : "+ record.value() + ". Error: " + e.getMessage());
+                        System.out.println("Failed to process record: " + record.value() + " Error: " + e.getMessage());
                     }
                 }
                 asyncCommit(consumer, MAX_RETRY);
@@ -85,6 +81,17 @@ public class ConsumerRunner implements Runnable{
             System.out.println("Failed to consume message: " + e.getMessage());
         } finally {
             consumer.close();
+        }
+    }
+
+    // 프로세서 실행
+    private void consumeRecord(ConsumerRecord<String, String> record) throws JsonProcessingException, JsonMappingException {
+        String actionValue = objectMapper.readTree(record.value()).get("action").asText();
+        FinancialAction action = FinancialAction.valueOf(actionValue.toUpperCase());
+        BaseProcessor processor = processorFactory.getProcessor(action);
+
+        if (processor != null) {
+            processor.process(record, bank);
         }
     }
 
