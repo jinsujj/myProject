@@ -11,7 +11,7 @@ import com.example.myproject.common.response.log.DepositLog;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-public class DepositProcessor implements MessageProcessor{
+public class DepositProcessor implements BaseProcessor{
     private ObjectMapper mapper = new ObjectMapper();
     private String customerNumber;
     private long depositAmount;

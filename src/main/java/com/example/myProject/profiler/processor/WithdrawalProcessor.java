@@ -10,7 +10,7 @@ import com.example.myproject.common.response.log.WithdrawLog;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-public class WithdrawalProcessor implements MessageProcessor {
+public class WithdrawalProcessor implements BaseProcessor {
     private ObjectMapper mapper = new ObjectMapper();
     private String customerNumber;
     private long withdrawAmount;

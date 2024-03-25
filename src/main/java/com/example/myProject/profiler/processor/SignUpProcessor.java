@@ -8,7 +8,7 @@ import com.example.myproject.common.response.log.SignUpLog;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-public class SignUpProcessor implements MessageProcessor{
+public class SignUpProcessor implements BaseProcessor{
     private ObjectMapper mapper = new ObjectMapper();
     private String customerName;
     private String customerNumber;

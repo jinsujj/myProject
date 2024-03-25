@@ -10,7 +10,7 @@ import com.example.myproject.common.response.log.TransferLog;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-public class TransferProcessor implements MessageProcessor{
+public class TransferProcessor implements BaseProcessor{
     private ObjectMapper mapper = new ObjectMapper();
     private String customerNumber;
     private String receivingAccountHolder;

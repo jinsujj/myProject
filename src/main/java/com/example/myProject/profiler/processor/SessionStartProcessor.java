@@ -7,7 +7,7 @@ import com.example.myproject.common.response.log.SessionStartLog;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-public class SessionStartProcessor implements MessageProcessor {
+public class SessionStartProcessor implements BaseProcessor {
     private ObjectMapper mapper = new ObjectMapper();
     private String customerNumber;
 

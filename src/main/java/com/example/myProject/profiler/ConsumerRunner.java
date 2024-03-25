@@ -18,7 +18,7 @@ import org.apache.kafka.common.serialization.StringDeserializer;
 
 import com.example.myproject.common.domain.Bank;
 import com.example.myproject.common.domain.FinancialAction;
-import com.example.myproject.profiler.processor.MessageProcessor;
+import com.example.myproject.profiler.processor.BaseProcessor;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 
@@ -69,7 +69,7 @@ public class ConsumerRunner implements Runnable{
                     String actionValue = new ObjectMapper().readTree(record.value()).get("action").asText();
                     FinancialAction action = FinancialAction.valueOf(actionValue.toUpperCase());
 
-                    MessageProcessor processor = new ProcessorFactory().getProcessor(action);
+                    BaseProcessor processor = new ProcessorFactory().getProcessor(action);
                     if (processor != null) {
                         processor.process(record,bank);
                     }
