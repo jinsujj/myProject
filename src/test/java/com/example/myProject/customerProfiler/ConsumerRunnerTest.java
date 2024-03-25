@@ -1,4 +1,4 @@
-package com.example.myProject.customerProfiler;
+package com.example.myproject.customerprofiler;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -7,7 +7,7 @@ import org.apache.kafka.clients.consumer.OffsetAndMetadata;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import com.example.myProject.common.domain.Bank;
+import com.example.myproject.common.domain.Bank;
 
 import java.util.Properties;
 import java.util.HashMap;

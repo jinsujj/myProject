@@ -1,4 +1,4 @@
-package com.example.myProject.customerProfiler;
+package com.example.myproject.customerprofiler;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
@@ -10,7 +10,7 @@ import java.util.concurrent.ExecutorService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import com.example.myProject.common.domain.Bank;
+import com.example.myproject.common.domain.Bank;
 
 public class EventConsumerTest {
     private EventConsumer eventConsumer;

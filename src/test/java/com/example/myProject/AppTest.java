@@ -1,4 +1,4 @@
-package com.example.myProject;
+package com.example.myproject;
 
 import junit.framework.Test;
 import junit.framework.TestCase;

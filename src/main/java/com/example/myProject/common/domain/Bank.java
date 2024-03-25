@@ -1,4 +1,4 @@
-package com.example.myProject.common.domain;
+package com.example.myproject.common.domain;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -6,7 +6,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 
-import com.example.myProject.common.responseDto.CustomerInfo;
+import com.example.myproject.common.responsedto.CustomerInfo;
 
 
 public class Bank {

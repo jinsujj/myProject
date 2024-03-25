@@ -1,4 +1,4 @@
-package com.example.myProject.common.domain;
+package com.example.myproject.common.domain;
 
 import java.util.ArrayList;
 import java.util.List;

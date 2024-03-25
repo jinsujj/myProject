@@ -1,9 +1,9 @@
-package com.example.myProject.common.responseDto;
+package com.example.myproject.common.responsedto;
 
 import java.util.List;
 
-import com.example.myProject.common.domain.Account;
-import com.example.myProject.common.domain.Transaction;
+import com.example.myproject.common.domain.Account;
+import com.example.myproject.common.domain.Transaction;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 

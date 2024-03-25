@@ -1,4 +1,4 @@
-package com.example.myProject.common.domain;
+package com.example.myproject.common.domain;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -7,6 +7,9 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+
+import com.example.myproject.common.domain.Customer;
+
 import java.time.format.DateTimeFormatter;
 import java.time.LocalDateTime;
 

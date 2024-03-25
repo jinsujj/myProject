@@ -9,7 +9,7 @@ docker-compose -f docker-compose-infra.yml up -d
 http://localhost:8989
 
 **broker-1, broker-2, broker-3** \
-http://localhost:9092, http://localhost:9093, http://localhost:9093
+http://localhost:9092, http://localhost:9093, http://localhost:9094
 
 **Number of Partition** \
 110
@@ -224,4 +224,12 @@ ETL 은 데이터의 누락, 중복이 모두 중요하기에, EOS(Exactly Once 
    다른 은행으로 이체 시, 해당 은행의 계좌가 없을 경우? \
    같은 은행내의 고객간에 이체 시 수취 계좌번호가 없을 경우? \
    같은 은행내의 고객간에 이체 시 수취 계좌번호와 수취 계죄주가 다를 경우?
+
+
+## 개선 사항
+- h2 DB 를 사용하자
+- try catch 놓친 부분 확인
+- 테스트 코드에서 set 을 넣은 부분
+- 레이어드 아키텍처 
+
 

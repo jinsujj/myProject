@@ -1,4 +1,4 @@
-package com.example.myProject.customerProfiler;
+package com.example.myproject.customerprofiler;
 
 import java.util.Properties;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -17,8 +17,8 @@ import org.apache.kafka.clients.consumer.OffsetAndMetadata;
 import org.apache.kafka.common.TopicPartition;
 import org.apache.kafka.common.serialization.StringDeserializer;
 
-import com.example.myProject.common.domain.Bank;
-import com.example.myProject.common.domain.FinancialAction;
+import com.example.myproject.common.domain.Bank;
+import com.example.myproject.common.domain.FinancialAction;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 
@@ -108,7 +108,7 @@ public class ConsumerRunner implements Runnable{
     }
 
     // 실패한 offset 저장 로직
-    protected void handleCommitFailure(Map<TopicPartition, OffsetAndMetadata> offsets, Exception exception) {
+    public void handleCommitFailure(Map<TopicPartition, OffsetAndMetadata> offsets, Exception exception) {
         System.out.println("Commit failed after retries: " + exception.getMessage());
         try (BufferedWriter writer = new BufferedWriter(new FileWriter("failed_consumer_offset.txt", true))) {
             for (Map.Entry<TopicPartition, OffsetAndMetadata> entry : offsets.entrySet()) {

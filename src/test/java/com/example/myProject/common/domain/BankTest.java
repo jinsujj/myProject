@@ -1,4 +1,4 @@
-package com.example.myProject.common.domain;
+package com.example.myproject.common.domain;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -9,7 +9,10 @@ import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import com.example.myProject.common.responseDto.CustomerInfo;
+import com.example.myproject.common.domain.Account;
+import com.example.myproject.common.domain.Bank;
+import com.example.myproject.common.domain.Customer;
+import com.example.myproject.common.responsedto.CustomerInfo;
 
 
 public class BankTest {

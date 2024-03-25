@@ -1,6 +1,6 @@
-package com.example.myProject.common.responseDto;
+package com.example.myproject.common.responsedto;
 
-import com.example.myProject.common.domain.Customer;
+import com.example.myproject.common.domain.Customer;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
