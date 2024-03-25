@@ -41,9 +41,7 @@ public class App
 
         // generator 모드로 실행
         if (args[0].equals("generator")) {
-            TestDataGenerator generator = new TestDataGenerator(
-                CUSTOMER_COUNT, SIMULATANEOUS_CUSTOMER,INTERVAL_DELAY);
-
+            TestDataGenerator generator = new TestDataGenerator(CUSTOMER_COUNT, SIMULATANEOUS_CUSTOMER,INTERVAL_DELAY);
             generator.simulateCustomerBehavior();
             return;
         }

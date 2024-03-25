@@ -6,10 +6,8 @@ import com.example.myproject.common.domain.Bank;
 import com.example.myproject.common.domain.Customer;
 import com.example.myproject.common.response.log.SignUpLog;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 
-public class SignUpProcessor implements BaseProcessor{
-    private ObjectMapper mapper = new ObjectMapper();
+public class SignUpProcessor extends BaseProcessor{
     private String customerName;
     private String customerNumber;
     private String dateOfBirth;
@@ -29,7 +27,4 @@ public class SignUpProcessor implements BaseProcessor{
 
         System.out.println(signUpLog.toJson());
     }
-
-    
-    
 }

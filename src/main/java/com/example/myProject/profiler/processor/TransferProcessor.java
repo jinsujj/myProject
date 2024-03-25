@@ -8,10 +8,8 @@ import com.example.myproject.common.domain.Bank;
 import com.example.myproject.common.domain.Customer;
 import com.example.myproject.common.response.log.TransferLog;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 
-public class TransferProcessor implements BaseProcessor{
-    private ObjectMapper mapper = new ObjectMapper();
+public class TransferProcessor extends BaseProcessor{
     private String customerNumber;
     private String receivingAccountHolder;
     private String receivingAccountNumber;
@@ -21,7 +19,7 @@ public class TransferProcessor implements BaseProcessor{
 
     @Override
     public void process(ConsumerRecord<String, String> record, Bank bank) throws JsonProcessingException {
-        TransferLog transferLog = mapper.readValue(record.value(), TransferLog.class);
+        TransferLog transferLog = this.mapper.readValue(record.value(), TransferLog.class);
 
         customerNumber = transferLog.getCustomerNumber();
         receivingAccountHolder = transferLog.getReceivingAccountHolder();

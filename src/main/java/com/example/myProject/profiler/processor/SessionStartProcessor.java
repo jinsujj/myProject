@@ -5,15 +5,13 @@ import org.apache.kafka.clients.consumer.ConsumerRecord;
 import com.example.myproject.common.domain.Bank;
 import com.example.myproject.common.response.log.SessionStartLog;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 
-public class SessionStartProcessor implements BaseProcessor {
-    private ObjectMapper mapper = new ObjectMapper();
+public class SessionStartProcessor extends BaseProcessor {
     private String customerNumber;
 
     @Override
     public void process(ConsumerRecord<String, String> record, Bank bank) throws JsonProcessingException {
-        SessionStartLog sessionStartLog = mapper.readValue(record.value(), SessionStartLog.class);
+        SessionStartLog sessionStartLog = this.mapper.readValue(record.value(), SessionStartLog.class);
 
         customerNumber = sessionStartLog.getCustomerNumber();
         if (customerNumber.isEmpty())

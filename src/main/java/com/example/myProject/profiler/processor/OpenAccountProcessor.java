@@ -8,17 +8,14 @@ import com.example.myproject.common.domain.Bank;
 import com.example.myproject.common.domain.Customer;
 import com.example.myproject.common.response.log.AccountOpeningLog;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 
-public class OpenAccountProcessor implements BaseProcessor {
-    private ObjectMapper mapper = new ObjectMapper();
-    
+public class OpenAccountProcessor extends BaseProcessor {
     private String accountNumber;
     private String customerNumber;
 
     @Override
     public void process(ConsumerRecord<String, String> record, Bank bank) throws JsonProcessingException {
-        AccountOpeningLog openAccountLog = mapper.readValue(record.value(), AccountOpeningLog.class);
+        AccountOpeningLog openAccountLog = this.mapper.readValue(record.value(), AccountOpeningLog.class);
 
         accountNumber = openAccountLog.getAccountNumber();
         customerNumber = openAccountLog.getCustomerNumber();
