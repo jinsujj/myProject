@@ -1,4 +1,4 @@
-package com.example.myproject.customerprofiler;
+package com.example.myproject.profiler;
 
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 

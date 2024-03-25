@@ -1,4 +1,4 @@
-package com.example.myproject.customerprofiler;
+package com.example.myproject.profiler;
 
 import java.util.Properties;
 import java.util.Arrays;

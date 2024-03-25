@@ -1,14 +1,14 @@
 package com.example.myproject;
 
 
-import com.example.myproject.customerprofiler.EventConsumer;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.example.myproject.datagenerator.TestDataGenerator;
+import com.example.myproject.profiler.EventConsumer;
 import com.example.myproject.common.domain.Account;
 import com.example.myproject.common.domain.Bank;
 import com.example.myproject.common.domain.Customer;
 import com.example.myproject.common.responsedto.AccountInfo;
 import com.example.myproject.common.responsedto.CustomerInfo;
+import com.example.myproject.generator.TestDataGenerator;
 
 import static spark.Spark.*;
 

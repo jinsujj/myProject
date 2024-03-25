@@ -1,4 +1,4 @@
-package com.example.myproject.datagenerator;
+package com.example.myproject.generator;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -16,9 +16,9 @@ import com.example.myproject.common.financialog.SessionStartLog;
 import com.example.myproject.common.financialog.SignUpLog;
 import com.example.myproject.common.financialog.TransferLog;
 import com.example.myproject.common.financialog.WithdrawLog;
-import com.example.myproject.datagenerator.util.EventProducer;
-import com.example.myproject.datagenerator.util.RandomMaker;
-import com.example.myproject.datagenerator.util.SessionManager;
+import com.example.myproject.generator.util.EventProducer;
+import com.example.myproject.generator.util.RandomMaker;
+import com.example.myproject.generator.util.SessionManager;
 import com.fasterxml.jackson.core.JsonProcessingException;
 
 public class TestDataGenerator {

@@ -1,4 +1,4 @@
-package com.example.myproject.datagenerator.util;
+package com.example.myproject.generator.util;
 
 import java.util.Properties;
 

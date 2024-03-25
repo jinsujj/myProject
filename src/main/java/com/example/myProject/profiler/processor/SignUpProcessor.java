@@ -1,11 +1,11 @@
-package com.example.myproject.customerprofiler.processor;
+package com.example.myproject.profiler.processor;
 
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 
 import com.example.myproject.common.domain.Bank;
 import com.example.myproject.common.domain.Customer;
 import com.example.myproject.common.financialog.SignUpLog;
-import com.example.myproject.customerprofiler.MessageProcessor;
+import com.example.myproject.profiler.MessageProcessor;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 

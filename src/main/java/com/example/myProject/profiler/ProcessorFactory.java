@@ -1,15 +1,15 @@
-package com.example.myproject.customerprofiler;
+package com.example.myproject.profiler;
 
 import java.util.HashMap;
 import java.util.Map;
 
 import com.example.myproject.common.domain.FinancialAction;
-import com.example.myproject.customerprofiler.processor.DepositProcessor;
-import com.example.myproject.customerprofiler.processor.OpenAccountProcessor;
-import com.example.myproject.customerprofiler.processor.SessionStartProcessor;
-import com.example.myproject.customerprofiler.processor.TransferProcessor;
-import com.example.myproject.customerprofiler.processor.WithdrawalProcessor;
-import com.example.myproject.customerprofiler.processor.SignUpProcessor;
+import com.example.myproject.profiler.processor.DepositProcessor;
+import com.example.myproject.profiler.processor.OpenAccountProcessor;
+import com.example.myproject.profiler.processor.SessionStartProcessor;
+import com.example.myproject.profiler.processor.SignUpProcessor;
+import com.example.myproject.profiler.processor.TransferProcessor;
+import com.example.myproject.profiler.processor.WithdrawalProcessor;
 
 public class ProcessorFactory {
     private final Map<FinancialAction, MessageProcessor> processorMap = new HashMap<>();
