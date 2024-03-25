@@ -9,9 +9,6 @@ import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import com.example.myproject.common.domain.Account;
-import com.example.myproject.common.domain.Bank;
-import com.example.myproject.common.domain.Customer;
 import com.example.myproject.common.responsedto.CustomerInfo;
 
 
