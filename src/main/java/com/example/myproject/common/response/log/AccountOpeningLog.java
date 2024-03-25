@@ -15,7 +15,7 @@ public class AccountOpeningLog extends BaseLog {
         this.customerNumber = "";
         this.accountNumber = "";
         this.accountOpeningTime = "";
-        this.action = "";
+        this.action = FinancialAction.OPEN_ACCOUNT.name();
     }
     
     public AccountOpeningLog(String customerNumber, String accountNumber, LocalDateTime accountOpeningTime) {

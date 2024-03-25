@@ -13,7 +13,7 @@ public class SessionStartLog extends BaseLog {
     public SessionStartLog(){
         this.customerNumber = "";
         this.sessionTime = "";
-        this.action = "";
+        this.action = FinancialAction.SESSION_START.name();
     }
 
     public SessionStartLog(String customerNumber, LocalDateTime sesstionTime) {

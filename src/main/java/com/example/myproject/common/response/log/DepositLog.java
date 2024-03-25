@@ -11,6 +11,14 @@ public class DepositLog extends BaseLog {
     private final long depositAmount;
     private final String depositTime;
     private final String action;
+
+    public DepositLog(){
+        this.customerNumber = "";
+        this.depositAccountNumber = "";
+        this.depositAmount = 0;
+        this.depositTime = "";
+        this.action = FinancialAction.DEPOSIT.name();
+    }
     
     public DepositLog(String customerNumber, String depositAccountNumber, long depositAmount, LocalDateTime depositTime) {
         this.customerNumber = customerNumber;

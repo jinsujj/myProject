@@ -17,7 +17,7 @@ public class SignUpLog extends BaseLog {
         this.customerName = "";
         this.dateOfBirth = "";
         this.registrationTime = "";
-        this.action = "";
+        this.action = FinancialAction.SIGNUP.name();
     }
 
     public SignUpLog(String customerNumber, String customerName, String dateOfBirth, String registrationTime) {

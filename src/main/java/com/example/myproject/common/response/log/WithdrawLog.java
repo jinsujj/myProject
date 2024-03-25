@@ -17,7 +17,7 @@ public class WithdrawLog extends BaseLog {
         this.withdrawAccountNumber = "";
         this.withdrawAmount = 0;
         this.withdrawTime = "";
-        this.action = "";
+        this.action = FinancialAction.WITHDRAWAL.name();
     }
 
     public WithdrawLog(String customerNumber, String withdrawAccountNumber, long withdrawAmount, LocalDateTime withdrawTime) {

@@ -23,7 +23,7 @@ public class TransferLog extends BaseLog {
         this.receivingAccountHolder = "";
         this.transferAmount = 0;
         this.transferTime = "";
-        this.action = "";
+        this.action = FinancialAction.TRANSFER.name();
     }
 
     public TransferLog(String customerNumber, String remittanceAccountNumber, String receivingBank,
