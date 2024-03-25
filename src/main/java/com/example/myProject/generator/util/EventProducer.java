@@ -10,6 +10,7 @@ import org.apache.kafka.common.Uuid;
 
 
 public class EventProducer {
+    private static final String BOOTSTRAP_SERVERS = "localhost:9092,localhost:9093,localhost:9094";
     private Producer<String, String> producer;
     private String transactionIdPrefix = "trans-"; 
     private final String financialEventsTopic = "FinancialEvents";
@@ -23,7 +24,7 @@ public class EventProducer {
 
     public EventProducer(){
         // Producer 설정
-        props.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, "localhost:9092,localhost:9093,localhost:9094");
+        props.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, BOOTSTRAP_SERVERS);
         props.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, "org.apache.kafka.common.serialization.StringSerializer");
         props.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, "org.apache.kafka.common.serialization.StringSerializer");
 
